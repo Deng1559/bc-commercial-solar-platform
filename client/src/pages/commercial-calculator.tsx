@@ -79,8 +79,7 @@ export default function CommercialCalculator() {
                   Start Analysis
                 </Button>
                 <Button 
-                  variant="outline" 
-                  className="border-2 border-white text-white px-8 py-3 hover:bg-white hover:text-blue-600"
+                  className="border-2 border-white bg-transparent text-white px-8 py-3 hover:bg-white hover:text-blue-600 transition-colors"
                   onClick={() => document.getElementById('financial-model')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   View Demo
