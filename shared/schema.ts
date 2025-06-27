@@ -52,6 +52,26 @@ export const bcRateStructure = pgTable("bc_rate_structure", {
   basicCharge: real("basic_charge"), // CAD per month
 });
 
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  businessName: text("business_name").notNull(),
+  businessType: text("business_type").notNull(),
+  address: text("address").notNull(),
+  monthlyElectricityBill: real("monthly_electricity_bill").notNull(),
+  roofArea: integer("roof_area").notNull(),
+  timeframe: text("timeframe").notNull(),
+  primaryGoal: text("primary_goal").notNull(),
+  additionalNotes: text("additional_notes"),
+  leadScore: integer("lead_score"), // 1-100 scoring system
+  status: text("status").default("new"), // new, contacted, qualified, quoted, closed
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertSolarProjectSchema = createInsertSchema(solarProjects).omit({
   id: true,
   createdAt: true,
@@ -66,12 +86,20 @@ export const insertBcRateStructureSchema = createInsertSchema(bcRateStructure).o
   id: true,
 });
 
+export const insertLeadSchema = createInsertSchema(leads).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertSolarProject = z.infer<typeof insertSolarProjectSchema>;
 export type SolarProject = typeof solarProjects.$inferSelect;
 export type InsertSolarCalculation = z.infer<typeof insertSolarCalculationSchema>;
 export type SolarCalculation = typeof solarCalculations.$inferSelect;
 export type InsertBcRateStructure = z.infer<typeof insertBcRateStructureSchema>;
 export type BcRateStructure = typeof bcRateStructure.$inferSelect;
+export type InsertLead = z.infer<typeof insertLeadSchema>;
+export type Lead = typeof leads.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;

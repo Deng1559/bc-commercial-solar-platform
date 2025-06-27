@@ -29,6 +29,7 @@ The application uses a PostgreSQL database with the following main entities:
 - **Solar Projects**: Business information and project requirements
 - **Solar Calculations**: Financial analysis results and projections
 - **BC Rate Structure**: British Columbia electricity rate tiers and pricing
+- **Leads**: Lead generation data with business contact information, project requirements, and automated lead scoring
 
 ## Key Components
 
@@ -114,15 +115,25 @@ Dedicated section (`client/src/components/incentives-section.tsx`) explaining:
 ### Environment Configuration
 - `DATABASE_URL`: PostgreSQL connection string (required)
 - `NODE_ENV`: Environment setting (development/production)
+- `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGHOST`: PostgreSQL connection parameters
 - Vite handles environment variable injection for frontend
 
 The application is designed for deployment on platforms supporting Node.js with PostgreSQL database connectivity. The monorepo structure allows for easy deployment to services like Replit, Vercel, or traditional hosting platforms.
+
+### Lead Management System
+The database integration includes:
+- **Automated Lead Scoring**: Business leads are automatically scored (0-100) based on monthly electricity usage, roof area, timeframe, and business type
+- **Lead Status Tracking**: Leads progress through statuses: new → contacted → qualified → quoted → closed
+- **CRM-Ready Data**: All lead data is structured for integration with external CRM systems
+- **API Endpoints**: Complete REST API for lead management and retrieval
 
 ## Changelog
 
 ```
 Changelog:
-- June 27, 2025. Initial setup
+- June 27, 2025. Initial setup and commercial solar calculator implementation
+- June 27, 2025. Added PostgreSQL database with Drizzle ORM integration
+- June 27, 2025. Implemented lead generation system with automated scoring
 ```
 
 ## User Preferences

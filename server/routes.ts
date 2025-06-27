@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertLeadSchema } from "@shared/schema";
 import { insertSolarProjectSchema, insertSolarCalculationSchema } from "@shared/schema";
 import { ZodError } from "zod";
 
@@ -214,33 +215,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit lead generation form
   app.post("/api/leads", async (req, res) => {
     try {
-      const leadData = req.body;
+      const leadData = insertLeadSchema.parse(req.body);
       
-      // In production, integrate with CRM system (Salesforce, HubSpot, etc.)
-      console.log("New solar lead submission:", {
-        timestamp: new Date().toISOString(),
-        business: leadData.businessName,
-        contact: `${leadData.firstName} ${leadData.lastName}`,
-        email: leadData.email,
-        phone: leadData.phone,
-        businessType: leadData.businessType,
-        monthlyBill: leadData.monthlyElectricityBill,
-        timeframe: leadData.timeframe,
-        primaryGoal: leadData.primaryGoal,
+      // Calculate lead score based on business criteria
+      let leadScore = 50; // Base score
+      
+      // Scoring criteria
+      if (leadData.monthlyElectricityBill > 1000) leadScore += 20;
+      if (leadData.monthlyElectricityBill > 2000) leadScore += 10;
+      if (leadData.roofArea > 10000) leadScore += 15;
+      if (leadData.timeframe === "Within 3 months") leadScore += 20;
+      if (leadData.timeframe === "3-6 months") leadScore += 10;
+      if (leadData.primaryGoal === "Cost savings") leadScore += 15;
+      if (leadData.businessType === "Manufacturing" || leadData.businessType === "Warehouse") leadScore += 10;
+      
+      // Store lead in database
+      const lead = await storage.createLead({
+        ...leadData,
+        leadScore: Math.min(leadScore, 100),
+        status: "new"
       });
 
-      // Send confirmation email (in production)
-      // await sendLeadConfirmationEmail(leadData.email, leadData.firstName);
-
-      // Notify sales team (in production)
-      // await notifySalesTeam(leadData);
+      console.log("New solar lead stored:", {
+        id: lead.id,
+        business: lead.businessName,
+        contact: `${lead.firstName} ${lead.lastName}`,
+        email: lead.email,
+        score: lead.leadScore,
+        timestamp: lead.createdAt
+      });
 
       res.json({ 
         message: "Lead submitted successfully",
-        leadId: Math.random().toString(36).substr(2, 9).toUpperCase()
+        leadId: lead.id.toString()
       });
     } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ 
+          message: "Invalid lead data", 
+          errors: error.errors 
+        });
+      }
       res.status(500).json({ message: "Failed to submit lead" });
+    }
+  });
+
+  // Get all leads (for admin interface)
+  app.get("/api/leads", async (req, res) => {
+    try {
+      const leads = await storage.getLeads();
+      res.json(leads);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to retrieve leads" });
+    }
+  });
+
+  // Update lead status
+  app.patch("/api/leads/:id/status", async (req, res) => {
+    try {
+      const leadId = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      await storage.updateLeadStatus(leadId, status);
+      res.json({ message: "Lead status updated successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update lead status" });
     }
   });
 
