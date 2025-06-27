@@ -39,30 +39,46 @@ export default function SolarMapAnalysis() {
     script.defer = true;
     
     (window as any).initMap = () => {
+      console.log("Google Maps API initializing...");
+      
       if (mapRef.current && (window as any).google) {
+        console.log("Creating map...");
         const map = new (window as any).google.maps.Map(mapRef.current, {
           center: { lat: 49.2827, lng: -123.1207 }, // Vancouver center
           zoom: 12,
           mapTypeId: 'satellite'
         });
         
-        // Add autocomplete functionality
-        const searchInput = document.getElementById('solar-address-input') as HTMLInputElement;
-        if (searchInput && (window as any).google.maps.places) {
-          const autocomplete = new (window as any).google.maps.places.Autocomplete(searchInput, {
-            componentRestrictions: { country: "ca" },
-            fields: ["geometry", "formatted_address"]
-          });
+        // Add autocomplete functionality with delay to ensure DOM is ready
+        setTimeout(() => {
+          const searchInput = document.getElementById('solar-address-input') as HTMLInputElement;
+          console.log("Search input found:", !!searchInput);
+          console.log("Google Places available:", !!(window as any).google?.maps?.places);
           
-          autocomplete.addListener('place_changed', () => {
-            const place = autocomplete.getPlace();
-            if (place.geometry && place.formatted_address) {
-              setAddress(place.formatted_address);
-              map.setCenter(place.geometry.location);
-              map.setZoom(20);
-            }
-          });
-        }
+          if (searchInput && (window as any).google?.maps?.places) {
+            console.log("Setting up autocomplete...");
+            const autocomplete = new (window as any).google.maps.places.Autocomplete(searchInput, {
+              componentRestrictions: { country: "ca" },
+              fields: ["geometry", "formatted_address"],
+              types: ["address"]
+            });
+            
+            autocomplete.addListener('place_changed', () => {
+              const place = autocomplete.getPlace();
+              console.log("Place selected:", place);
+              if (place.geometry && place.formatted_address) {
+                setAddress(place.formatted_address);
+                map.setCenter(place.geometry.location);
+                map.setZoom(20);
+              }
+            });
+            console.log("Autocomplete setup complete");
+          } else {
+            console.error("Failed to setup autocomplete - missing requirements");
+          }
+        }, 1000);
+      } else {
+        console.error("Failed to initialize map - missing requirements");
       }
     };
 
