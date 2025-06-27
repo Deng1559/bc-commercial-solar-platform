@@ -25,10 +25,10 @@ export default function SolarMapAnalysis() {
 
   // Google Maps integration with fallback
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const apiKey = import.meta.env.VITE_GOOGLE_SOLAR_API_KEY;
     
     if (!apiKey) {
-      console.log("Google Maps API key not configured - using fallback mode");
+      console.log("Google Solar API key not configured - using fallback mode");
       return;
     }
 
