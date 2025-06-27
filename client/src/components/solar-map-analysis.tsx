@@ -32,54 +32,29 @@ export default function SolarMapAnalysis() {
       return;
     }
 
-    // Initialize Google Maps only if API key is available
+    // Check if Google Maps is already loaded
+    if ((window as any).google?.maps) {
+      console.log("Google Maps already loaded, setting up autocomplete...");
+      setupAutocomplete();
+      return;
+    }
+
+    // Check if script is already loading
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+    if (existingScript) {
+      console.log("Google Maps script already loading...");
+      return;
+    }
+
+    // Initialize Google Maps only if not already loaded
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,maps&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
     script.async = true;
     script.defer = true;
     
-    (window as any).initMap = () => {
-      console.log("Google Maps API initializing...");
-      
-      if (mapRef.current && (window as any).google) {
-        console.log("Creating map...");
-        const map = new (window as any).google.maps.Map(mapRef.current, {
-          center: { lat: 49.2827, lng: -123.1207 }, // Vancouver center
-          zoom: 12,
-          mapTypeId: 'satellite'
-        });
-        
-        // Add autocomplete functionality with delay to ensure DOM is ready
-        setTimeout(() => {
-          const searchInput = document.getElementById('solar-address-input') as HTMLInputElement;
-          console.log("Search input found:", !!searchInput);
-          console.log("Google Places available:", !!(window as any).google?.maps?.places);
-          
-          if (searchInput && (window as any).google?.maps?.places) {
-            console.log("Setting up autocomplete...");
-            const autocomplete = new (window as any).google.maps.places.Autocomplete(searchInput, {
-              componentRestrictions: { country: "ca" },
-              fields: ["geometry", "formatted_address"],
-              types: ["address"]
-            });
-            
-            autocomplete.addListener('place_changed', () => {
-              const place = autocomplete.getPlace();
-              console.log("Place selected:", place);
-              if (place.geometry && place.formatted_address) {
-                setAddress(place.formatted_address);
-                map.setCenter(place.geometry.location);
-                map.setZoom(20);
-              }
-            });
-            console.log("Autocomplete setup complete");
-          } else {
-            console.error("Failed to setup autocomplete - missing requirements");
-          }
-        }, 1000);
-      } else {
-        console.error("Failed to initialize map - missing requirements");
-      }
+    (window as any).initGoogleMaps = () => {
+      console.log("Google Maps API initialized successfully");
+      setupAutocomplete();
     };
 
     document.head.appendChild(script);
@@ -91,6 +66,36 @@ export default function SolarMapAnalysis() {
       }
     };
   }, []);
+
+  const setupAutocomplete = () => {
+    // Add autocomplete functionality with delay to ensure DOM is ready
+    setTimeout(() => {
+      const searchInput = document.getElementById('solar-address-input') as HTMLInputElement;
+      console.log("Search input found:", !!searchInput);
+      console.log("Google Places available:", !!(window as any).google?.maps?.places);
+      
+      if (searchInput && (window as any).google?.maps?.places) {
+        console.log("Setting up autocomplete...");
+        const autocomplete = new (window as any).google.maps.places.Autocomplete(searchInput, {
+          componentRestrictions: { country: "ca" },
+          fields: ["geometry", "formatted_address"],
+          types: ["address"]
+        });
+        
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          console.log("Place selected:", place);
+          if (place.geometry && place.formatted_address) {
+            setAddress(place.formatted_address);
+          }
+        });
+        console.log("Autocomplete setup complete");
+      } else {
+        console.error("Failed to setup autocomplete - missing requirements");
+        console.log("Available Google APIs:", Object.keys((window as any).google?.maps || {}));
+      }
+    }, 500);
+  };
 
   const analyzeSolarPotential = async () => {
     if (!address) {
