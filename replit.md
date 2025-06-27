@@ -42,13 +42,13 @@ Advanced real-time calculator (`client/src/components/interactive-financial-mode
 - Integrated incentive calculations (Federal ITC, BC Hydro rebates, PST exemptions)
 - AI-powered risk analysis and opportunity assessment
 
-### Google Solar API Integration
-Satellite-powered property analysis (`client/src/components/solar-map-analysis.tsx`) providing:
-- Real-time roof assessment using Google Solar API
-- Interactive satellite map visualization
-- Solar potential rating and system sizing recommendations
-- Automated roof area calculations and panel optimization
-- Address-based solar irradiance data for BC regions
+### BC Regional Solar Analysis
+Intelligent property analysis (`client/src/components/solar-map-analysis.tsx`) providing:
+- BC-specific solar irradiance data (Vancouver: 3.2, Victoria: 3.8, Kelowna: 4.1 kWh/m²/day)
+- Commercial roof assessment and system sizing recommendations
+- Regional climate-adjusted solar potential ratings
+- Business-type specific roof area calculations and panel optimization
+- Address-based solar estimates optimized for British Columbia conditions
 
 ### Lead Generation System
 Comprehensive lead capture and management (`client/src/components/lead-generation-form.tsx`):
@@ -114,7 +114,8 @@ Dedicated section (`client/src/components/incentives-section.tsx`) explaining:
 
 ### Environment Configuration
 - `DATABASE_URL`: PostgreSQL connection string (required)
-- `GOOGLE_SOLAR_API_KEY`: Google Solar API key for real satellite analysis (required)
+- `GOOGLE_SOLAR_API_KEY`: Google API key for address geocoding and Places API (required)
+- `VITE_GOOGLE_SOLAR_API_KEY`: Frontend Google API key for address autocomplete (required)
 - `GEMINI_API_KEY`: Google Gemini API key for AI-powered lead analysis (required)
 - `NODE_ENV`: Environment setting (development/production)
 - `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGHOST`: PostgreSQL connection parameters
@@ -157,6 +158,7 @@ Changelog:
 - June 27, 2025. Added Gemini AI for intelligent lead qualification and business analysis
 - June 27, 2025. Configured Google Maps Places API integration for address autocomplete
 - June 27, 2025. Fixed UI button display issues and Google API multiple loading conflicts
+- June 27, 2025. Finalized BC regional solar analysis system for accurate British Columbia estimates
 ```
 
 ## User Preferences
