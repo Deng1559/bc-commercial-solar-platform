@@ -241,8 +241,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Step 1: Get location coordinates from address
       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+      console.log("Making geocoding request for address:", address);
       const geocodeResponse = await fetch(geocodeUrl);
       const geocodeData = await geocodeResponse.json();
+      console.log("Geocoding response status:", geocodeData.status);
       
       if (geocodeData.status === "REQUEST_DENIED") {
         console.error("Google API key needs Geocoding API enabled:", geocodeData.error_message);
