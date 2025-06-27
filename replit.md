@@ -114,6 +114,8 @@ Dedicated section (`client/src/components/incentives-section.tsx`) explaining:
 
 ### Environment Configuration
 - `DATABASE_URL`: PostgreSQL connection string (required)
+- `GOOGLE_SOLAR_API_KEY`: Google Solar API key for real satellite analysis (required)
+- `GEMINI_API_KEY`: Google Gemini API key for AI-powered lead analysis (required)
 - `NODE_ENV`: Environment setting (development/production)
 - `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGHOST`: PostgreSQL connection parameters
 - Vite handles environment variable injection for frontend
@@ -122,10 +124,27 @@ The application is designed for deployment on platforms supporting Node.js with 
 
 ### Lead Management System
 The database integration includes:
-- **Automated Lead Scoring**: Business leads are automatically scored (0-100) based on monthly electricity usage, roof area, timeframe, and business type
+- **AI-Powered Lead Scoring**: Business leads are automatically analyzed and scored (0-100) using Gemini AI for intelligent business assessment
+- **Smart Business Analysis**: AI evaluates energy consumption patterns, business type suitability, and solar potential
+- **Intelligent Lead Qualification**: Automated priority classification (High/Medium/Low) with detailed reasoning and recommendations
 - **Lead Status Tracking**: Leads progress through statuses: new → contacted → qualified → quoted → closed
 - **CRM-Ready Data**: All lead data is structured for integration with external CRM systems
 - **API Endpoints**: Complete REST API for lead management and retrieval
+
+## AI-Powered Features
+
+### Gemini AI Integration
+The application leverages Google's Gemini AI for intelligent business analysis:
+- **Smart Lead Qualification**: AI analyzes business type, energy usage, and goals to provide intelligent lead scoring
+- **Business Solar Suitability Assessment**: AI evaluates energy consumption patterns and business characteristics
+- **Automated Priority Classification**: Leads are categorized as High/Medium/Low priority with detailed reasoning
+- **Intelligent Recommendations**: AI provides specific next steps and opportunities for each lead
+- **Personalized ROI Explanations**: AI generates business-specific financial analysis explanations
+
+### API Endpoints
+- `POST /api/leads` - Enhanced with AI analysis and intelligent scoring
+- `POST /api/generate-roi-explanation` - AI-powered personalized ROI explanations
+- `POST /api/analyze-solar-potential` - Real Google Solar API integration for satellite analysis
 
 ## Changelog
 
@@ -134,6 +153,8 @@ Changelog:
 - June 27, 2025. Initial setup and commercial solar calculator implementation
 - June 27, 2025. Added PostgreSQL database with Drizzle ORM integration
 - June 27, 2025. Implemented lead generation system with automated scoring
+- June 27, 2025. Integrated Google Solar API for real satellite property analysis
+- June 27, 2025. Added Gemini AI for intelligent lead qualification and business analysis
 ```
 
 ## User Preferences

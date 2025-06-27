@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertLeadSchema } from "@shared/schema";
 import { insertSolarProjectSchema, insertSolarCalculationSchema } from "@shared/schema";
 import { ZodError } from "zod";
+import { analyzeBusinessForSolar, qualifyLead, generateInsightfulROIExplanation } from "./gemini";
 
 async function calculateSolarSystem(project: any) {
   // Solar calculation logic
@@ -272,22 +273,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const leadData = insertLeadSchema.parse(req.body);
       
-      // Calculate lead score based on business criteria
-      let leadScore = 50; // Base score
+      // AI-powered business analysis
+      let businessAnalysis;
+      let leadQualification;
       
-      // Scoring criteria
-      if (leadData.monthlyElectricityBill > 1000) leadScore += 20;
-      if (leadData.monthlyElectricityBill > 2000) leadScore += 10;
-      if (leadData.roofArea > 10000) leadScore += 15;
-      if (leadData.timeframe === "Within 3 months") leadScore += 20;
-      if (leadData.timeframe === "3-6 months") leadScore += 10;
-      if (leadData.primaryGoal === "Cost savings") leadScore += 15;
-      if (leadData.businessType === "Manufacturing" || leadData.businessType === "Warehouse") leadScore += 10;
+      try {
+        // Analyze business for solar potential using Gemini AI
+        businessAnalysis = await analyzeBusinessForSolar({
+          businessName: leadData.businessName,
+          businessType: leadData.businessType,
+          monthlyElectricityBill: leadData.monthlyElectricityBill,
+          roofArea: leadData.roofArea,
+          timeframe: leadData.timeframe,
+          primaryGoal: leadData.primaryGoal,
+          additionalNotes: leadData.additionalNotes || undefined
+        });
+
+        // Qualify the lead using AI
+        leadQualification = await qualifyLead({
+          firstName: leadData.firstName,
+          lastName: leadData.lastName,
+          businessName: leadData.businessName,
+          businessType: leadData.businessType,
+          monthlyElectricityBill: leadData.monthlyElectricityBill,
+          roofArea: leadData.roofArea,
+          timeframe: leadData.timeframe,
+          primaryGoal: leadData.primaryGoal,
+          additionalNotes: leadData.additionalNotes || undefined
+        });
+
+        console.log("AI Business Analysis:", {
+          business: leadData.businessName,
+          solarSuitability: businessAnalysis.solarSuitability,
+          qualificationScore: businessAnalysis.qualificationScore,
+          leadPriority: leadQualification.priority,
+          aiLeadScore: leadQualification.score
+        });
+
+      } catch (aiError) {
+        console.log("AI analysis failed, using fallback scoring:", aiError);
+        // Fallback to rule-based scoring if AI fails
+        businessAnalysis = null;
+        leadQualification = null;
+      }
+
+      // Use AI score if available, otherwise fallback to rule-based
+      let finalLeadScore = 50;
+      if (leadQualification) {
+        finalLeadScore = leadQualification.score;
+      } else {
+        // Fallback scoring criteria
+        if (leadData.monthlyElectricityBill > 1000) finalLeadScore += 20;
+        if (leadData.monthlyElectricityBill > 2000) finalLeadScore += 10;
+        if (leadData.roofArea > 10000) finalLeadScore += 15;
+        if (leadData.timeframe === "Within 3 months") finalLeadScore += 20;
+        if (leadData.timeframe === "3-6 months") finalLeadScore += 10;
+        if (leadData.primaryGoal === "Cost savings") finalLeadScore += 15;
+        if (leadData.businessType === "Manufacturing" || leadData.businessType === "Warehouse") finalLeadScore += 10;
+        finalLeadScore = Math.min(finalLeadScore, 100);
+      }
       
       // Store lead in database
       const lead = await storage.createLead({
         ...leadData,
-        leadScore: Math.min(leadScore, 100),
+        leadScore: finalLeadScore,
         status: "new"
       });
 
@@ -297,13 +346,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         contact: `${lead.firstName} ${lead.lastName}`,
         email: lead.email,
         score: lead.leadScore,
+        aiPowered: !!leadQualification,
+        priority: leadQualification?.priority || "Standard",
         timestamp: lead.createdAt
       });
 
-      res.json({ 
+      // Return enhanced response with AI insights
+      const response: any = { 
         message: "Lead submitted successfully",
-        leadId: lead.id.toString()
-      });
+        leadId: lead.id.toString(),
+        leadScore: finalLeadScore
+      };
+
+      if (businessAnalysis) {
+        response.aiInsights = {
+          solarSuitability: businessAnalysis.solarSuitability,
+          recommendedSystemSize: businessAnalysis.recommendedSystemSize,
+          keyInsights: businessAnalysis.keyInsights,
+          nextSteps: businessAnalysis.nextSteps
+        };
+      }
+
+      if (leadQualification) {
+        response.qualification = {
+          priority: leadQualification.priority,
+          reasoning: leadQualification.reasoning,
+          recommendations: leadQualification.recommendations,
+          opportunities: leadQualification.opportunities
+        };
+      }
+
+      res.json(response);
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({ 
@@ -311,6 +384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errors: error.errors 
         });
       }
+      console.error("Lead submission error:", error);
       res.status(500).json({ message: "Failed to submit lead" });
     }
   });
@@ -335,6 +409,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Lead status updated successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to update lead status" });
+    }
+  });
+
+  // Generate AI-powered ROI explanation
+  app.post("/api/generate-roi-explanation", async (req, res) => {
+    try {
+      const { calculationResults, businessContext } = req.body;
+      
+      if (!calculationResults || !businessContext) {
+        return res.status(400).json({ message: "Missing calculation results or business context" });
+      }
+
+      const explanation = await generateInsightfulROIExplanation(
+        calculationResults,
+        businessContext
+      );
+
+      res.json({ explanation });
+    } catch (error) {
+      console.error("ROI explanation generation error:", error);
+      res.status(500).json({ message: "Failed to generate ROI explanation" });
     }
   });
 
