@@ -227,107 +227,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Analyze solar potential with Google Solar API
+  // Analyze solar potential with BC regional data
   app.post("/api/analyze-solar-potential", async (req, res) => {
     try {
-      console.log("DEBUG: /api/analyze-solar-potential called with:", req.body.address);
       const { address } = req.body;
       if (!address) {
         return res.status(400).json({ message: "Address is required" });
       }
 
-      const apiKey = process.env.GOOGLE_SOLAR_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ message: "Google Solar API key not configured" });
-      }
-
-      // Step 1: Get location coordinates from address
-      const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
-      console.log("DEBUG: Making geocoding request for:", address);
-      const geocodeResponse = await fetch(geocodeUrl);
-      const geocodeData = await geocodeResponse.json();
-      console.log("DEBUG: Geocoding status:", geocodeData.status);
-      
-      if (geocodeData.status === "REQUEST_DENIED") {
-        console.log("DEBUG: Geocoding denied, falling back to BC estimates");
-        return res.json(generateBCEstimates(address));
-      }
-      
-      if (geocodeData.status !== "OK") {
-        console.log("DEBUG: Geocoding failed with status:", geocodeData.status);
-        return res.json(generateBCEstimates(address));
-      }
-      
-      if (!geocodeData.results || geocodeData.results.length === 0) {
-        return res.status(400).json({ message: "Address not found" });
-      }
-      
-      const location = geocodeData.results[0].geometry.location;
-      const lat = location.lat;
-      const lng = location.lng;
-      
-      // Step 2: Get building insights from Google Solar API
-      console.log(`DEBUG: Making Solar API call for coordinates: ${lat}, ${lng}`);
-      const buildingInsightsUrl = `https://solar.googleapis.com/v1/buildingInsights:findClosest?location.latitude=${lat}&location.longitude=${lng}&key=${apiKey}`;
-      const buildingResponse = await fetch(buildingInsightsUrl);
-      const buildingData = await buildingResponse.json();
-      
-      console.log("DEBUG: Solar API response status:", buildingResponse.status);
-      if (!buildingResponse.ok) {
-        console.error("DEBUG: Solar API error details:", {
-          status: buildingResponse.status,
-          statusText: buildingResponse.statusText,
-          data: buildingData
-        });
-        return res.json(generateBCEstimates(address));
-      }
-      
-      console.log("DEBUG: Solar API success, has solarPotential:", !!buildingData.solarPotential);
-      if (!buildingData.solarPotential) {
-        console.log("DEBUG: No solar potential data in response:", Object.keys(buildingData));
-        return res.json(generateBCEstimates(address));
-      }
-      
-      // Extract solar potential data
-      const solarPotential = buildingData.solarPotential;
-      const roofSegmentStats = solarPotential?.roofSegmentStats?.[0];
-      const solarPanelConfigs = solarPotential?.solarPanelConfigs || [];
-      
-      // Find optimal configuration (usually the largest feasible system)
-      const optimalConfig = solarPanelConfigs.reduce((best, current) => {
-        return current.yearlyEnergyDcKwh > (best?.yearlyEnergyDcKwh || 0) ? current : best;
-      }, null);
-      
-      // Calculate roof area from segment stats
-      const roofAreaM2 = roofSegmentStats?.stats?.areaMeters2 || 0;
-      const roofAreaSqFt = Math.round(roofAreaM2 * 10.764); // Convert to square feet
-      
-      // Determine solar potential rating
-      let solarPotentialRating = "Low";
-      if (solarPotential?.maxSunshineHoursPerYear > 1500) {
-        solarPotentialRating = "High";
-      } else if (solarPotential?.maxSunshineHoursPerYear > 1200) {
-        solarPotentialRating = "Medium";
-      } else if (solarPotential?.maxSunshineHoursPerYear > 900) {
-        solarPotentialRating = "Good";
-      }
-      
-      const solarData = {
-        maxArrayPanelsCount: optimalConfig?.panelsCount || 0,
-        yearlyEnergyDc: Math.round(optimalConfig?.yearlyEnergyDcKwh || 0),
-        systemSizeKw: optimalConfig ? Math.round((optimalConfig.panelsCount * 400) / 1000) : 0, // Assuming 400W panels
-        address: geocodeData.results[0].formatted_address,
-        estimatedGrossCost: 0,
-        roofArea: roofAreaSqFt,
-        solarPotentialRating: solarPotentialRating,
-        maxSunshineHoursPerYear: solarPotential?.maxSunshineHoursPerYear || 0,
-        carbonOffsetFactorKgPerMwh: solarPotential?.carbonOffsetFactorKgPerMwh || 0
-      };
-
-      // Calculate estimated cost
-      solarData.estimatedGrossCost = solarData.systemSizeKw * 1000 * 2.50; // $2.50/W for commercial
-
-      res.json(solarData);
+      // Use BC regional solar analysis for accurate British Columbia estimates
+      return res.json(generateBCEstimates(address));
     } catch (error) {
       console.error("Solar potential analysis error:", error);
       res.status(500).json({ message: "Failed to analyze solar potential" });

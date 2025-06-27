@@ -23,78 +23,40 @@ export default function SolarMapAnalysis() {
   const mapRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Google Maps integration with fallback
-  useEffect(() => {
-    const apiKey = import.meta.env.VITE_GOOGLE_SOLAR_API_KEY;
+  // BC Address suggestions for common commercial locations
+  const bcCommonAddresses = [
+    "1200 West Georgia Street, Vancouver, BC",
+    "999 West Hastings Street, Vancouver, BC", 
+    "200 Granville Street, Vancouver, BC",
+    "1166 Alberni Street, Vancouver, BC",
+    "800 Robson Street, Vancouver, BC",
+    "500 Burrard Street, Vancouver, BC",
+    "1075 West Georgia Street, Vancouver, BC",
+    "777 Dunsmuir Street, Vancouver, BC",
+    "1111 West Georgia Street, Vancouver, BC",
+    "355 Burrard Street, Vancouver, BC"
+  ];
+
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const handleAddressChange = (value: string) => {
+    setAddress(value);
     
-    if (!apiKey) {
-      console.log("Google Solar API key not configured - using fallback mode");
-      return;
+    if (value.length > 2) {
+      const filtered = bcCommonAddresses.filter(addr => 
+        addr.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filtered);
+      setShowSuggestions(filtered.length > 0);
+    } else {
+      setShowSuggestions(false);
     }
+  };
 
-    // Check if Google Maps is already loaded
-    if ((window as any).google?.maps) {
-      console.log("Google Maps already loaded, setting up autocomplete...");
-      setupAutocomplete();
-      return;
-    }
-
-    // Check if script is already loading
-    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-    if (existingScript) {
-      console.log("Google Maps script already loading...");
-      return;
-    }
-
-    // Initialize Google Maps only if not already loaded
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
-    script.async = true;
-    script.defer = true;
-    
-    (window as any).initGoogleMaps = () => {
-      console.log("Google Maps API initialized successfully");
-      setupAutocomplete();
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-    };
-  }, []);
-
-  const setupAutocomplete = () => {
-    // Add autocomplete functionality with delay to ensure DOM is ready
-    setTimeout(() => {
-      const searchInput = document.getElementById('solar-address-input') as HTMLInputElement;
-      console.log("Search input found:", !!searchInput);
-      console.log("Google Places available:", !!(window as any).google?.maps?.places);
-      
-      if (searchInput && (window as any).google?.maps?.places) {
-        console.log("Setting up autocomplete...");
-        const autocomplete = new (window as any).google.maps.places.Autocomplete(searchInput, {
-          componentRestrictions: { country: "ca" },
-          fields: ["geometry", "formatted_address"],
-          types: ["address"]
-        });
-        
-        autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          console.log("Place selected:", place);
-          if (place.geometry && place.formatted_address) {
-            setAddress(place.formatted_address);
-          }
-        });
-        console.log("Autocomplete setup complete");
-      } else {
-        console.error("Failed to setup autocomplete - missing requirements");
-        console.log("Available Google APIs:", Object.keys((window as any).google?.maps || {}));
-      }
-    }, 500);
+  const selectAddress = (selectedAddress: string) => {
+    setAddress(selectedAddress);
+    setShowSuggestions(false);
   };
 
   const analyzeSolarPotential = async () => {
@@ -165,29 +127,49 @@ export default function SolarMapAnalysis() {
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Enter your business address to get an instant, data-driven analysis of your building's 
-            rooftop solar potential using the Google Solar API.
+            rooftop solar potential using BC-specific regional climate data.
           </p>
         </div>
 
         {/* Address Input */}
         <div className="max-w-2xl mx-auto mb-8">
-          <div className="flex rounded-md shadow-sm">
-            <Input
-              id="solar-address-input"
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="flex-1 rounded-l-md border-r-0"
-              placeholder="Enter your BC business address"
-            />
-            <Button
-              onClick={analyzeSolarPotential}
-              disabled={isLoading || !address}
-              className="bg-blue-600 text-white hover:bg-blue-700 rounded-l-none"
-            >
-              <Search className="h-4 w-4 mr-2" />
-              {isLoading ? "Analyzing..." : "Analyze"}
-            </Button>
+          <div className="relative">
+            <div className="flex rounded-md shadow-sm">
+              <Input
+                id="solar-address-input"
+                type="text"
+                value={address}
+                onChange={(e) => handleAddressChange(e.target.value)}
+                onFocus={() => address.length > 2 && setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                className="flex-1 rounded-l-md border-r-0"
+                placeholder="Enter your BC business address"
+              />
+              <Button
+                onClick={analyzeSolarPotential}
+                disabled={isLoading || !address}
+                className="bg-blue-600 text-white hover:bg-blue-700 rounded-l-none"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                {isLoading ? "Analyzing..." : "Analyze"}
+              </Button>
+            </div>
+            
+            {/* Address Suggestions */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-12 bg-white border border-gray-200 rounded-md shadow-lg z-10 max-h-48 overflow-y-auto">
+                {suggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                    onMouseDown={() => selectAddress(suggestion)}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           {error && (
             <p className="mt-2 text-red-600 text-sm text-center">{error}</p>
