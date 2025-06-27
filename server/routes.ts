@@ -202,6 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Analyze solar potential with Google Solar API
   app.post("/api/analyze-address", async (req, res) => {
     try {
+      console.log("DEBUG: /api/analyze-address called with:", req.body.address);
       const { address } = req.body;
       if (!address) {
         return res.status(400).json({ message: "Address is required" });
@@ -229,6 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Analyze solar potential with Google Solar API
   app.post("/api/analyze-solar-potential", async (req, res) => {
     try {
+      console.log("DEBUG: /api/analyze-solar-potential called with:", req.body.address);
       const { address } = req.body;
       if (!address) {
         return res.status(400).json({ message: "Address is required" });
@@ -241,16 +243,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Step 1: Get location coordinates from address
       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+      console.log("DEBUG: Making geocoding request for:", address);
       const geocodeResponse = await fetch(geocodeUrl);
       const geocodeData = await geocodeResponse.json();
+      console.log("DEBUG: Geocoding status:", geocodeData.status);
       
       if (geocodeData.status === "REQUEST_DENIED") {
-        // Using BC regional estimates (preferred system for accurate BC-specific data)
+        console.log("DEBUG: Geocoding denied, falling back to BC estimates");
         return res.json(generateBCEstimates(address));
       }
       
       if (geocodeData.status !== "OK") {
-        // Using BC regional estimates for better BC-specific accuracy
+        console.log("DEBUG: Geocoding failed with status:", geocodeData.status);
         return res.json(generateBCEstimates(address));
       }
       
@@ -263,18 +267,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const lng = location.lng;
       
       // Step 2: Get building insights from Google Solar API
-      console.log(`Making Solar API call for coordinates: ${lat}, ${lng}`);
+      console.log(`DEBUG: Making Solar API call for coordinates: ${lat}, ${lng}`);
       const buildingInsightsUrl = `https://solar.googleapis.com/v1/buildingInsights:findClosest?location.latitude=${lat}&location.longitude=${lng}&key=${apiKey}`;
       const buildingResponse = await fetch(buildingInsightsUrl);
       const buildingData = await buildingResponse.json();
       
+      console.log("DEBUG: Solar API response status:", buildingResponse.status);
       if (!buildingResponse.ok) {
-        console.error("Solar API error:", buildingResponse.status, buildingData);
-        console.log("Falling back to BC regional estimates due to Solar API error");
+        console.error("DEBUG: Solar API error details:", {
+          status: buildingResponse.status,
+          statusText: buildingResponse.statusText,
+          data: buildingData
+        });
         return res.json(generateBCEstimates(address));
       }
       
-      console.log("Solar API response successful:", !!buildingData.solarPotential);
+      console.log("DEBUG: Solar API success, has solarPotential:", !!buildingData.solarPotential);
+      if (!buildingData.solarPotential) {
+        console.log("DEBUG: No solar potential data in response:", Object.keys(buildingData));
+        return res.json(generateBCEstimates(address));
+      }
       
       // Extract solar potential data
       const solarPotential = buildingData.solarPotential;
