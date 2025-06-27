@@ -246,7 +246,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (geocodeData.status === "REQUEST_DENIED") {
         console.error("Google API key needs Geocoding API enabled:", geocodeData.error_message);
+        console.log("Falling back to BC regional estimates for address:", address);
         // Return BC-specific estimates based on address analysis
+        return res.json(generateBCEstimates(address));
+      }
+      
+      if (geocodeData.status !== "OK") {
+        console.error("Geocoding failed with status:", geocodeData.status, geocodeData.error_message);
+        console.log("Falling back to BC regional estimates for address:", address);
         return res.json(generateBCEstimates(address));
       }
       
@@ -259,16 +266,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const lng = location.lng;
       
       // Step 2: Get building insights from Google Solar API
+      console.log(`Making Solar API call for coordinates: ${lat}, ${lng}`);
       const buildingInsightsUrl = `https://solar.googleapis.com/v1/buildingInsights:findClosest?location.latitude=${lat}&location.longitude=${lng}&key=${apiKey}`;
       const buildingResponse = await fetch(buildingInsightsUrl);
       const buildingData = await buildingResponse.json();
       
       if (!buildingResponse.ok) {
-        console.error("Solar API error:", buildingData);
-        return res.status(500).json({ 
-          message: `Solar analysis failed: ${buildingData.error?.message || 'Unknown error'}` 
-        });
+        console.error("Solar API error:", buildingResponse.status, buildingData);
+        console.log("Falling back to BC regional estimates due to Solar API error");
+        return res.json(generateBCEstimates(address));
       }
+      
+      console.log("Solar API response successful:", !!buildingData.solarPotential);
       
       // Extract solar potential data
       const solarPotential = buildingData.solarPotential;
