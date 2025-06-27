@@ -182,6 +182,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analyze solar potential with Google Solar API
+  app.post("/api/analyze-solar-potential", async (req, res) => {
+    try {
+      const { address } = req.body;
+      if (!address) {
+        return res.status(400).json({ message: "Address is required" });
+      }
+
+      // Mock Google Solar API response for development
+      // In production, integrate with actual Google Solar API
+      const mockSolarData = {
+        maxArrayPanelsCount: Math.floor(Math.random() * 200) + 50,
+        yearlyEnergyDc: Math.floor(Math.random() * 100000) + 50000,
+        systemSizeKw: Math.floor(Math.random() * 200) + 50,
+        address: address,
+        estimatedGrossCost: 0,
+        roofArea: Math.floor(Math.random() * 15000) + 5000,
+        solarPotentialRating: ["High", "Medium", "Good"][Math.floor(Math.random() * 3)]
+      };
+
+      // Calculate estimated cost
+      mockSolarData.estimatedGrossCost = mockSolarData.systemSizeKw * 1000 * 2.50;
+
+      res.json(mockSolarData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to analyze solar potential" });
+    }
+  });
+
+  // Submit lead generation form
+  app.post("/api/leads", async (req, res) => {
+    try {
+      const leadData = req.body;
+      
+      // In production, integrate with CRM system (Salesforce, HubSpot, etc.)
+      console.log("New solar lead submission:", {
+        timestamp: new Date().toISOString(),
+        business: leadData.businessName,
+        contact: `${leadData.firstName} ${leadData.lastName}`,
+        email: leadData.email,
+        phone: leadData.phone,
+        businessType: leadData.businessType,
+        monthlyBill: leadData.monthlyElectricityBill,
+        timeframe: leadData.timeframe,
+        primaryGoal: leadData.primaryGoal,
+      });
+
+      // Send confirmation email (in production)
+      // await sendLeadConfirmationEmail(leadData.email, leadData.firstName);
+
+      // Notify sales team (in production)
+      // await notifySalesTeam(leadData);
+
+      res.json({ 
+        message: "Lead submitted successfully",
+        leadId: Math.random().toString(36).substr(2, 9).toUpperCase()
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to submit lead" });
+    }
+  });
+
   // Submit contact form
   app.post("/api/contact", async (req, res) => {
     try {

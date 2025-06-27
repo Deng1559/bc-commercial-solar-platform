@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC Commercial Solar: 2025 Interactive Investment Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .kpi-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            transition: color 0.2s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #16a34a;
+        }
+        .tab-button.active {
+            border-color: #16a34a;
+            color: #16a34a;
+            background-color: #f0fdf4;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #solar-map {
+            height: 400px;
+            width: 100%;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <nav class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-slate-700">☀️ BC Commercial Solar Guide</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#how-it-works" class="nav-link text-slate-600 font-medium px-3 py-2 rounded-md text-sm">How It Works</a>
+                        <a href="#incentives" class="nav-link text-slate-600 font-medium px-3 py-2 rounded-md text-sm">Incentives</a>
+                        <a href="#financials" class="nav-link text-slate-600 font-medium px-3 py-2 rounded-md text-sm">Financials</a>
+                        <a href="#solar-potential" class="nav-link text-slate-600 font-medium px-3 py-2 rounded-md text-sm">Your Property</a>
+                        <a href="#use-cases" class="nav-link text-slate-600 font-medium px-3 py-2 rounded-md text-sm">Use Cases</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="hero" class="bg-white">
+            <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 text-center">
+                <div class="inline-block bg-yellow-100 text-yellow-800 text-sm font-semibold tracking-wider uppercase rounded-full px-4 py-1 mb-4">
+                    Urgent 2025 Opportunity
+                </div>
+                <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">The Definitive Guide to Commercial Solar in BC</h1>
+                <p class="mt-6 max-w-3xl mx-auto text-xl text-slate-600">A unique convergence of powerful incentives and regulatory change makes 2025 a pivotal year. This guide provides the data-driven intelligence to capitalize on this time-sensitive opportunity and secure a powerful financial return.</p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <a href="#financials" class="inline-block bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-green-700 transition-colors">Model Your ROI</a>
+                    <a href="#outlook" class="inline-block bg-slate-200 text-slate-800 font-bold py-3 px-8 rounded-lg text-lg hover:bg-slate-300 transition-colors">Understand the Urgency</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-20 sm:py-28">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">How Solar Creates Value: The Net Metering Advantage</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">Under BC Hydro's Self-Generation Program, your solar system works in a clear hierarchy to maximize value: first, you power your own operations to avoid retail costs, then you bank any excess energy as credits for later use.</p>
+                </div>
+
+                <div class="mt-16 grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+                     <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-xl font-semibold text-center mb-4">Seasonal Energy Banking</h3>
+                        <p class="text-sm text-center text-slate-500 mb-4">This chart illustrates the core concept of net metering in BC. High solar generation in the summer creates a surplus of energy credits, which are "banked" to offset the higher consumption and lower generation during the winter months.</p>
+                        <div class="chart-container" style="height:350px;">
+                            <canvas id="seasonalChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800">The Hierarchy of Value</h3>
+                        <div class="mt-8 space-y-6">
+                             <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-emerald-100 text-emerald-600 font-bold text-xl">1</div><div class="ml-4"><h4 class="text-lg font-medium">Self-Consumption (Highest Value)</h4><p class="mt-1 text-slate-500">Electricity from your panels first powers your facility. Every kWh you use on-site is a kWh you avoid buying from BC Hydro at the full retail rate (e.g., ~12-18¢/kWh).</p></div></div>
+                             <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-sky-100 text-sky-600 font-bold text-xl">2</div><div class="ml-4"><h4 class="text-lg font-medium">Banking kWh Credits</h4><p class="mt-1 text-slate-500">When you generate more power than you need, the excess is automatically exported to the grid. BC Hydro banks these kWh credits to offset your future bills.</p></div></div>
+                             <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 text-amber-600 font-bold text-xl">3</div><div class="ml-4"><h4 class="text-lg font-medium">Annual Surplus Payout (Lowest Value)</h4><p class="mt-1 text-slate-500">If you have surplus credits after a full year (March 1st), BC Hydro pays you for them at a variable wholesale market rate (avg. ~6-10¢/kWh).</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="incentives" class="bg-white py-20 sm:py-28">
+             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">The 2025 Incentive Stack: Reducing Your Cost by Over 60%</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">A powerful combination of federal and provincial programs makes 2025 the most affordable time to invest in commercial solar. These incentives "stack" together to dramatically reduce your net capital outlay.</p>
+                </div>
+                <div class="mt-16 grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="lg:order-last">
+                        <h3 class="text-2xl font-bold text-slate-800">How the Incentives Stack Up</h3>
+                        <div class="mt-8 space-y-6">
+                            <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-600 text-white font-bold">FED</div><div class="ml-4"><h4 class="text-lg font-medium">30% Refundable ITC</h4><p class="mt-1 text-slate-500">A direct 30% cash rebate from the federal government on the capital cost of the system.</p></div></div>
+                            <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-600 text-white font-bold">FED</div><div class="ml-4"><h4 class="text-lg font-medium">Accelerated Depreciation</h4><p class="mt-1 text-slate-500">Write off the system's cost under the aggressive CCA Class 43.2 (50% rate), creating a large tax shield.</p></div></div>
+                            <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-green-600 text-white font-bold">BC</div><div class="ml-4"><h4 class="text-lg font-medium">BC Hydro Rebate</h4><p class="mt-1 text-slate-500">Up to $10,000 for solar ($1,000/kW) and $10,000 for batteries ($500/kWh).</p></div></div>
+                            <div class="flex items-start"><div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-green-600 text-white font-bold">BC</div><div class="ml-4"><h4 class="text-lg font-medium">PST Exemption</h4><p class="mt-1 text-slate-500">A 7% Provincial Sales Tax exemption on all solar panels and system equipment.</p></div></div>
+                        </div>
+                    </div>
+                     <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <h3 class="text-xl font-semibold text-center mb-4">Deconstructing the Investment: A 100 kW Example</h3>
+                        <p class="text-sm text-center text-slate-500 mb-6">This chart shows how a $250,000 gross system cost is systematically reduced by stacked incentives, arriving at a far lower effective cost in the first year.</p>
+                        <div class="chart-container" style="height:320px;">
+                            <canvas id="incentiveWaterfallChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="financials" class="py-20 sm:py-28 bg-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Interactive Financial Modeling</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">Model your own project. Use the sliders to adjust key assumptions and see in real-time how they impact your payback period, long-term returns, and overall savings.</p>
+                </div>
+                
+                <div class="mt-12 p-6 md:p-8 bg-white rounded-2xl shadow-md">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <label for="systemCost" class="block text-sm font-medium text-slate-700">System Cost ($ per Watt)</label>
+                            <input id="systemCost" type="range" min="2.20" max="3.00" value="2.50" step="0.05" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer mt-2">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1"><span>$2.20</span><span id="systemCostLabel" class="font-bold text-slate-800 text-base">$2.50/W</span><span>$3.00</span></div>
+                        </div>
+                        <div>
+                            <label for="rateEscalation" class="block text-sm font-medium text-slate-700">Annual Electricity Rate Escalation (%)</label>
+                            <input id="rateEscalation" type="range" min="2.0" max="6.0" value="3.75" step="0.25" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer mt-2">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1"><span>2.0%</span><span id="rateEscalationLabel" class="font-bold text-slate-800 text-base">3.75%</span><span>6.0%</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12">
+                    <h3 class="text-2xl font-bold text-slate-800 text-center">Key Performance Indicators (100 kW System)</h3>
+                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="kpi-card bg-white p-6 rounded-xl shadow-lg text-center"><h4 class="text-slate-500 font-medium">Payback Period</h4><p id="kpi-payback" class="text-4xl font-extrabold text-green-600 mt-2">8.5 Yrs</p></div>
+                        <div class="kpi-card bg-white p-6 rounded-xl shadow-lg text-center"><h4 class="text-slate-500 font-medium">25-Year IRR</h4><p id="kpi-irr" class="text-4xl font-extrabold text-green-600 mt-2">11.5%</p></div>
+                        <div class="kpi-card bg-white p-6 rounded-xl shadow-lg text-center"><h4 class="text-slate-500 font-medium">Year 1 Savings</h4><p id="kpi-y1-savings" class="text-4xl font-extrabold text-green-600 mt-2">$18k</p></div>
+                        <div class="kpi-card bg-white p-6 rounded-xl shadow-lg text-center"><h4 class="text-slate-500 font-medium">Effective Y1 Cost</h4><p id="kpi-net-cost" class="text-4xl font-extrabold text-blue-600 mt-2">$120k</p></div>
+                    </div>
+                    <div class="text-center mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                        <button id="explainNumbersBtn" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
+                            ✨ Explain KPIs
+                        </button>
+                        <button id="draft-memo-btn" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            📝 Draft Investment Memo
+                        </button>
+                        <button id="analyze-risk-btn" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
+                           ⚖️ Analyze Risks & Opportunities
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solar-potential" class="py-20 sm:py-28 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Assess Your Property's Solar Potential</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">Enter your business address to get an instant, data-driven analysis of your building's rooftop solar potential using the Google Solar API.</p>
+                </div>
+                <div id="solar-potential-main-content" class="mt-10 max-w-2xl mx-auto">
+                    <div class="flex rounded-md shadow-sm">
+                        <input type="text" id="address-input" class="flex-1 block w-full rounded-none rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2" placeholder="Enter your business address">
+                        <button id="analyze-address-btn" class="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700">Analyze</button>
+                    </div>
+                </div>
+                <div id="solar-loader" class="mt-12 justify-center hidden"><div class="loader"></div></div>
+                <div id="solar-error" class="mt-8 text-center text-red-600 hidden"></div>
+                <div id="solar-results-container" class="mt-12 grid lg:grid-cols-2 gap-12 items-start hidden">
+                    <div id="solar-map"></div>
+                    <div id="solar-data-output" class="bg-slate-50 p-8 rounded-xl"></div>
+                </div>
+                <div id="property-roi-output" class="mt-8 max-w-4xl mx-auto bg-green-50 border border-green-200 p-6 rounded-lg hidden"></div>
+                <div id="ai-report-output" class="mt-8 max-w-4xl mx-auto hidden"></div>
+            </div>
+        </section>
+
+        <section id="use-cases" class="py-20 sm:py-28 bg-slate-100">
+             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Who is Solar Right For?</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">The business case for solar varies by sector. Explore high-potential profiles below, or get a personalized analysis for your specific business.</p>
+                </div>
+                <div class="mt-10 max-w-2xl mx-auto p-6 bg-white rounded-2xl shadow-lg border border-slate-200">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="businessTypeInput" class="block text-lg font-medium text-slate-800">1. Enter Your Business Type:</label>
+                             <input type="text" id="businessTypeInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="e.g., craft brewery, car dealership, data center">
+                        </div>
+                        <div>
+                            <label for="address-input-insights" class="block text-lg font-medium text-slate-800">2. Enter Business Address for Accurate Analysis:</label>
+                            <input type="text" id="address-input-insights" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Use Google Autocomplete">
+                        </div>
+                    </div>
+                    <button id="getBusinessInsightsBtn" class="mt-6 w-full inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700">✨ Get Location-Aware AI Insights</button>
+                </div>
+                <div class="mt-12 max-w-4xl mx-auto">
+                    <div class="hidden sm:block"><div class="border-b border-gray-200"><nav id="tabs-desktop" class="-mb-px flex space-x-8" aria-label="Tabs"></nav></div></div>
+                    <div id="tab-content" class="mt-8"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="outlook" class="bg-blue-800 text-white">
+            <div class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold">The Urgency of 2025: Why You Need to Act Now</h2>
+                    <p class="mt-4 text-lg text-blue-200">BC Hydro's Self-Generation Program is under a major regulatory review by the BCUC. The current, highly favorable "net metering" rules are expected to be replaced by a new "net billing" structure, likely in 2026. Businesses that secure their interconnection approval in 2025 will likely be "grandfathered" under the current, more lucrative rules.</p>
+                    <p class="mt-4 text-lg text-blue-200 font-bold">This isn't just an opportunity—it's a strategic deadline to lock in a superior long-term return and mitigate future regulatory risk.</p>
+                    <div class="mt-8"><a href="#" class="inline-block bg-white text-blue-800 font-bold py-3 px-8 rounded-lg text-lg hover:bg-blue-100 transition-colors">Begin Your Application Process</a></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="aiModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                 <div class="flex justify-between items-center">
+                    <h3 id="modalTitle" class="text-lg leading-6 font-medium text-gray-900">AI-Powered Insight</h3>
+                    <button id="copyModalContentBtn" class="hidden px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-md hover:bg-blue-200">Copy</button>
+                 </div>
+                <div id="modalContent" class="mt-4 px-2 py-3 min-h-[150px] flex items-center justify-center text-left bg-slate-50 rounded-lg border"></div>
+                <div class="items-center px-4 py-3 text-right">
+                    <button id="closeModalBtn" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-700">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // IMPORTANT: Add your API keys here
+        const Maps_API_KEY = "AIzaSyBLKjYfPQUNuY8AsucLrK4JwlYLdKTfBHY"; // Key for Google Maps & Solar API
+        const GEMINI_API_KEY = "AIzaSyDebYmiqsMJ2ddqPZDX9fyGUt7ZIaRseM4";      // Key for Gemini API (can be the same or different)
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const financialData = {
+                panelDegradation: 0.007,
+                mgsEnergyRate: 0.1080,
+                bcHydroRebateCap: 10000,
+                corporateTaxRate: 0.27,
+                ccaRate: 0.50,
+                firstYearCcaMultiplier: 0.75,
+                pstRate: 0.07,
+                federalItcRate: 0.30
+            };
+
+            const seasonalData = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                generation: [2500, 4500, 8000, 11000, 14000, 15500, 16000, 14500, 11000, 7000, 3500, 2500],
+                consumption: [10000, 9500, 9000, 8500, 8500, 9000, 9500, 9500, 9000, 9000, 9500, 10000]
+            };
+            
+            const useCasesData = [
+                { name: "Warehousing & Industrial", icon: "📦", content: `<div class="grid md:grid-cols-2 gap-8 items-center"><div><h4 class="text-xl font-bold">The Ideal Candidate</h4><p class="mt-2 text-slate-600">Warehouses are prime candidates for solar due to large, flat, unobstructed roofs and daytime energy profiles that align perfectly with solar production. Primary loads like lighting, material handling equipment, and HVAC run during peak sun hours, ensuring a very high rate of on-site self-consumption and maximizing savings.</p><h4 class="text-xl font-bold mt-6">Value Proposition</h4><p class="mt-2 text-slate-600">For facilities on Medium or Large General Service rates, solar delivers huge value by 'shaving' expensive monthly demand charges. The ability to install a large system (often 100kW+) allows these businesses to maximize their rooftop asset, achieve significant operational cost reductions, and meet corporate ESG mandates.</p></div><div class="bg-slate-100 p-6 rounded-lg"><h5 class="font-semibold text-center">Sector Snapshot</h5><ul class="mt-4 space-y-3 text-sm"><li class="flex items-center"><span class="text-xl mr-3">🏠</span><strong>Asset:</strong> Large, flat roofs (20k-100k+ sq ft)</li><li class="flex items-center"><span class="text-xl mr-3">⚡️</span><strong>Energy Profile:</strong> High daytime load, significant demand charges.</li><li class="flex items-center"><span class="text-xl mr-3">💰</span><strong>Key Driver:</strong> ROI, demand charge reduction, ESG goals.</li><li class="flex items-center"><span class="text-xl mr-3">🔧</span><strong>Consideration:</strong> Roof condition and structural capacity.</li></ul></div></div>`},
+                { name: "Agriculture (Farms)", icon: "🚜", content: `<div class="grid md:grid-cols-2 gap-8 items-center"><div><h4 class="text-xl font-bold">High-Consumption, High-Return</h4><p class="mt-2 text-slate-600">Dairy farms and greenhouses are among the most energy-intensive businesses in BC. They have high, consistent, and non-discretionary electricity demand from cooling, pumps, ventilation, and lighting. This high, constant load profile ensures an exceptionally high self-consumption rate for any solar power generated during the day.</p><h4 class="text-xl font-bold mt-6">Value Proposition</h4><p class="mt-2 text-slate-600">The ability to offset both high energy (kWh) and demand (kW) charges is the key value driver. System sizing must be carefully matched to the farm's unique load profile. The large, unobstructed roofs of modern barns and available land for ground-mount systems are perfect for hosting large solar arrays.</p></div><div class="bg-slate-100 p-6 rounded-lg"><h5 class="font-semibold text-center">Sector Snapshot</h5><ul class="mt-4 space-y-3 text-sm"><li class="flex items-center"><span class="text-xl mr-3">🏠</span><strong>Asset:</strong> Large barn roofs, open land.</li><li class="flex items-center"><span class="text-xl mr-3">⚡️</span><strong>Energy Profile:</strong> Very high, consistent load (cooling, pumps, lighting).</li><li class="flex items-center"><span class="text-xl mr-3">💰</span><strong>Key Driver:</strong> Drastic operational cost reduction, energy independence.</li><li class="flex items-center"><span class="text-xl mr-3">🔧</span><strong>Consideration:</strong> System sizing must be matched to complex load profiles.</li></ul></div></div>`},
+                { name: "Strata Corporations", icon: "🏢", content: `<div class="grid md:grid-cols-2 gap-8 items-center"><div><h4 class="text-xl font-bold">Compliance-Driven Investment</h4><p class="mt-2 text-slate-600">The primary driver for stratas is the new provincial mandate requiring all buildings with 5+ units to obtain an Electrical Planning Report (EPR) by 2026/2028. This report assesses the building's capacity for future electrification (EV charging, heat pumps). Solar is a key tool for meeting these future loads without requiring costly service upgrades from BC Hydro.</p><h4 class="text-xl font-bold mt-6">Value Proposition</h4><p class="mt-2 text-slate-600">While solar directly reduces common area electricity bills (lighting, elevators, ventilation), its main value is strategic. It's a long-term capital investment that future-proofs the building, satisfies regulatory requirements, increases property values, and makes the building more attractive to prospective buyers.</p></div><div class="bg-slate-100 p-6 rounded-lg"><h5 class="font-semibold text-center">Sector Snapshot</h5><ul class="mt-4 space-y-3 text-sm"><li class="flex items-center"><span class="text-xl mr-3">🏠</span><strong>Asset:</strong> Common area rooftops.</li><li class="flex items-center"><span class="text-xl mr-3">⚡️</span><strong>Energy Profile:</strong> Common area loads + future EV/heating loads.</li><li class="flex items-center"><span class="text-xl mr-3">💰</span><strong>Key Driver:</strong> **Mandatory EPR compliance**, future-proofing, reducing strata fees.</li><li class="flex items-center"><span class="text-xl mr-3">🔧</span><strong>Consideration:</strong> Requires strata council education and approval process.</li></ul></div></div>`}
+            ];
+
+            let seasonalChart, incentiveWaterfallChart, map, heatmapOverlay;
+            let selectedPlace = null;
+            let insightsSelectedPlace = null;
+            let propertySolarData = null;
+            let propertyFinancials = null;
+
+            const systemCostSlider = document.getElementById('systemCost');
+            const rateEscalationSlider = document.getElementById('rateEscalation');
+            const getBusinessInsightsBtn = document.getElementById('getBusinessInsightsBtn');
+            const aiModal = document.getElementById('aiModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const copyModalContentBtn = document.getElementById('copyModalContentBtn');
+            const analyzeAddressBtn = document.getElementById('analyze-address-btn');
+            const solarResultsContainer = document.getElementById('solar-results-container');
+            const solarDataOutput = document.getElementById('solar-data-output');
+            const solarLoader = document.getElementById('solar-loader');
+            const solarError = document.getElementById('solar-error');
+            const aiReportOutput = document.getElementById('ai-report-output');
+            const propertyRoiOutput = document.getElementById('property-roi-output');
+            const explainNumbersBtn = document.getElementById('explainNumbersBtn');
+            const draftMemoBtn = document.getElementById('draft-memo-btn');
+            const analyzeRiskBtn = document.getElementById('analyze-risk-btn');
+
+            function calculateFinancials(systemSizeKw = 100, annualGenerationKwh = 100000, grossSystemCostOverride = null) {
+                const costPerWatt = parseFloat(systemCostSlider.value);
+                const escalationRate = parseFloat(rateEscalationSlider.value) / 100;
+
+                const grossSystemCost = grossSystemCostOverride !== null ? grossSystemCostOverride : systemSizeKw * 1000 * costPerWatt;
+                const capitalCostForTax = grossSystemCost / (1 + financialData.pstRate);
+                const federalItc = capitalCostForTax * financialData.federalItcRate;
+                const bcHydroRebate = Math.min(systemSizeKw * 1000, financialData.bcHydroRebateCap);
+                
+                const netCostAfterRebates = capitalCostForTax - federalItc - bcHydroRebate;
+                
+                const ccaBase = capitalCostForTax - federalItc;
+                const firstYearDeduction = ccaBase * financialData.firstYearCcaMultiplier;
+                const taxShield = firstYearDeduction * financialData.corporateTaxRate;
+                const effectiveYear1NetCost = netCostAfterRebates - taxShield;
+
+                let annualGeneration = annualGenerationKwh;
+                let currentEnergyRate = financialData.mgsEnergyRate;
+                let year1TotalSavings = annualGeneration * currentEnergyRate;
+
+                let cumulativeSavings = 0;
+                let paybackYear = -1;
+                let twentyFiveYearSavings = 0;
+
+                for (let year = 1; year <= 25; year++) {
+                    const energySavings = annualGeneration * currentEnergyRate;
+                    cumulativeSavings += energySavings;
+                    twentyFiveYearSavings += energySavings;
+                    if (cumulativeSavings >= effectiveYear1NetCost && paybackYear === -1) paybackYear = year + (effectiveYear1NetCost - (cumulativeSavings - energySavings)) / energySavings;
+                    annualGeneration *= (1 - financialData.panelDegradation);
+                    currentEnergyRate *= (1 + escalationRate);
+                }
+                
+                const averageAnnualProfit = (twentyFiveYearSavings - effectiveYear1NetCost) / 25;
+                const simpleIRR = (averageAnnualProfit / effectiveYear1NetCost) * 100;
+
+                return {grossSystemCost, pstExemption: grossSystemCost - capitalCostForTax, federalItc, bcHydroRebate, taxShield, effectiveYear1NetCost, paybackYear, irr: simpleIRR, year1TotalSavings};
+            }
+            
+            function updateDashboard(systemSizeKw = 100, annualGenerationKwh = 100000) {
+                const results = calculateFinancials(systemSizeKw, annualGenerationKwh);
+                
+                document.getElementById('systemCostLabel').textContent = `$${parseFloat(systemCostSlider.value).toFixed(2)}/W`;
+                document.getElementById('rateEscalationLabel').textContent = `${parseFloat(rateEscalationSlider.value).toFixed(1)}%`;
+                
+                document.getElementById('kpi-payback').textContent = `${results.paybackYear > 0 ? results.paybackYear.toFixed(1) : '>25'} Yrs`;
+                document.getElementById('kpi-irr').textContent = `${results.irr.toFixed(1)}%`;
+                document.getElementById('kpi-y1-savings').textContent = `$${Math.round(results.year1TotalSavings / 1000)}k`;
+                document.getElementById('kpi-net-cost').textContent = `$${Math.round(results.effectiveYear1NetCost / 1000)}k`;
+
+                if (incentiveWaterfallChart) {
+                    incentiveWaterfallChart.data.datasets[0].data = [results.grossSystemCost, -results.pstExemption, -results.federalItc, -results.bcHydroRebate, -results.taxShield];
+                    incentiveWaterfallChart.update();
+                }
+            }
+
+            function initCharts() {
+                new Chart(document.getElementById('seasonalChart').getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: seasonalData.labels, datasets: [{ type: 'line', label: 'Consumption', data: seasonalData.consumption, borderColor: 'rgb(239, 68, 68)', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.3 }, { type: 'bar', label: 'Generation', data: seasonalData.generation, backgroundColor: 'rgba(22, 163, 74, 0.7)' }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { stacked: false, title: { display: true, text: 'Energy (kWh)' } } }, plugins: { tooltip: { mode: 'index', intersect: false } } }
+                });
+
+                const initialResults = calculateFinancials();
+                incentiveWaterfallChart = new Chart(document.getElementById('incentiveWaterfallChart').getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: ['Gross Cost', 'PST Exemption', 'Federal ITC', 'BC Hydro Rebate', 'Tax Shield'], datasets: [{ label: 'Cost Breakdown', data: [], backgroundColor: ['rgba(239, 68, 68, 0.7)', 'rgba(22, 163, 74, 0.6)', 'rgba(37, 99, 235, 0.6)', 'rgba(22, 163, 74, 0.8)', 'rgba(37, 99, 235, 0.8)'] }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => `${c.label}: $${Math.abs(c.raw).toLocaleString()}` } } }, scales: { x: { title: { display: true, text: 'Cost Impact ($)' }, ticks: { callback: (v) => '$' + (v / 1000) + 'k' } } } }
+                });
+            }
+            
+            function setupTabs() {
+                const tabContainerDesktop = document.getElementById('tabs-desktop');
+                const tabContent = document.getElementById('tab-content');
+                useCasesData.forEach((tab, index) => {
+                    const button = document.createElement('button');
+                    button.className = `tab-button whitespace-nowrap flex items-center py-4 px-1 border-b-2 font-medium text-sm text-slate-500 hover:text-green-600 hover:border-green-300`;
+                    button.innerHTML = `<span class="text-2xl mr-2">${tab.icon}</span> ${tab.name}`;
+                    button.setAttribute('data-index', index);
+                    if (index === 0) button.classList.add('active');
+                    tabContainerDesktop.appendChild(button);
+                });
+
+                const setActiveTab = (index) => {
+                    Array.from(tabContainerDesktop.children).forEach((btn, i) => btn.classList.toggle('active', i == index));
+                    tabContent.innerHTML = useCasesData[index].content;
+                }
+                tabContainerDesktop.addEventListener('click', (e) => { const btn = e.target.closest('.tab-button'); if (btn) setActiveTab(btn.getAttribute('data-index')); });
+                setActiveTab(0);
+            }
+
+            async function callGemini(prompt) {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+                try {
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+                    if (!response.ok) {
+                        console.error("Gemini API Error:", response.status, await response.text());
+                        return "Authentication failed with the Gemini API. The API key is likely invalid or missing.";
+                    }
+                    const result = await response.json();
+                    return result.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    return "Sorry, a connection error occurred while contacting the AI. Please check the console.";
+                }
+            }
+            
+            function copyToClipboard(text) {
+                const ta = document.createElement('textarea');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+                document.body.removeChild(ta);
+            }
+
+            function showModal(title, contentPromise) {
+                modalTitle.textContent = title;
+                modalContent.innerHTML = '<div class="loader"></div>';
+                copyModalContentBtn.classList.add('hidden');
+                aiModal.classList.remove('hidden');
+                
+                contentPromise.then(content => {
+                    const cleanContentHtml = content.replace(/\n/g, '<br>');
+                    modalContent.innerHTML = `<div class="text-base text-slate-600">${cleanContentHtml}</div>`;
+                    copyModalContentBtn.classList.remove('hidden');
+                    copyModalContentBtn.onclick = () => {
+                        copyToClipboard(content); 
+                        copyModalContentBtn.textContent = 'Copied!';
+                        setTimeout(() => { copyModalContentBtn.textContent = 'Copy'; }, 2000);
+                    };
+                });
+            }
+
+            closeModalBtn.addEventListener('click', () => aiModal.classList.add('hidden'));
+            
+            getBusinessInsightsBtn.addEventListener('click', () => {
+                if (!GEMINI_API_KEY) {
+                    showModal("Feature Disabled", Promise.resolve("A Gemini API key is required for this feature. Please add your key to the script."));
+                    return;
+                }
+                const businessType = document.getElementById('businessTypeInput').value;
+                if (!businessType.trim() || !insightsSelectedPlace) {
+                    showModal("Input Required", Promise.resolve("Please enter both a business type and select a valid address from the dropdown to get your analysis."));
+                    return;
+                }
+                const prompt = `I own a business in British Columbia, Canada, described as: "${businessType}" at the address "${insightsSelectedPlace.formatted_address}". The current year is 2025. Acting as an expert commercial solar energy consultant, provide a brief, professional analysis of the opportunities and key considerations for installing a solar PV system for this type of business at this specific location. Structure your response into these specific points: 1. **Likely Energy Profile & Solar Alignment:** What are the most probable electricity uses? When does this business likely use the most power? How well does this align with solar production? 2. **Primary Value Drivers:** What are the main ways solar would save this business money? Consider the specific address in your reasoning if possible. 3. **Key Considerations & Questions to Ask:** What unique factors should this business consider? What key questions should the owner be asking a solar installer? Keep the tone professional, helpful, and specific to the British Columbia context.`;
+                showModal(`AI Insights for: ${businessType}`, callGemini(prompt));
+            });
+
+            explainNumbersBtn.addEventListener('click', () => {
+                if (!GEMINI_API_KEY) { showModal("Feature Disabled", Promise.resolve("A Gemini API key is required.")); return; }
+                const results = calculateFinancials();
+                const prompt = `Explain these financial metrics for a 100kW solar project in BC like you're talking to a business owner. Keep it short and focus on the business value. Payback: ${results.paybackYear.toFixed(1)} years, IRR: ${results.irr.toFixed(1)}%, Year 1 Savings: $${Math.round(results.year1TotalSavings).toLocaleString()}, Effective Year 1 Cost: $${Math.round(results.effectiveYear1NetCost).toLocaleString()}.`;
+                showModal("Financial KPI Summary", callGemini(prompt));
+            });
+
+            draftMemoBtn.addEventListener('click', () => {
+                if (!GEMINI_API_KEY) { showModal("Feature Disabled", Promise.resolve("A Gemini API key is required.")); return; }
+                const results = calculateFinancials();
+                const cost = parseFloat(systemCostSlider.value).toFixed(2);
+                const escalation = parseFloat(rateEscalationSlider.value).toFixed(1);
+                const prompt = `Draft a concise, professional investment memo for a potential financial partner or board regarding a 100kW solar project in BC. Use the following data.
+                - **Subject:** Proposed 100kW Solar PV Investment
+                - **Key Assumptions:** System Cost: $${cost}/W, Annual Rate Escalation: ${escalation}%.
+                - **Financial Projections:** Payback Period of ${results.paybackYear.toFixed(1)} years, 25-Year IRR of ${results.irr.toFixed(1)}%, First-year savings of ~$${Math.round(results.year1TotalSavings).toLocaleString()}.
+                - **Investment Summary:** The effective first-year cost after all 2025 incentives is ~$${Math.round(results.effectiveYear1NetCost).toLocaleString()}.
+                - **Recommendation:** Conclude with a strong recommendation to proceed to the next stage of getting a formal proposal, highlighting this as a strong financial and ESG investment.`;
+                showModal("Draft Investment Memo", callGemini(prompt));
+            });
+
+             analyzeRiskBtn.addEventListener('click', () => {
+                if (!GEMINI_API_KEY) { showModal("Feature Disabled", Promise.resolve("A Gemini API key is required.")); return; }
+                const results = calculateFinancials();
+                const prompt = `Act as a risk management consultant for a business in BC considering a 100kW solar project in 2025. Based on the financial results (Payback: ${results.paybackYear.toFixed(1)} years, IRR: ${results.irr.toFixed(1)}%), provide a brief, balanced analysis of the key opportunity and the key risk.
+                - **Opportunity:** Frame the financial results as a strong, predictable return that hedges against electricity rate volatility.
+                - **Risk:** Explain the regulatory risk. BC Hydro's Self-Generation program is under review by the BCUC, and the current, favorable "net metering" rules are expected to be replaced by a less favorable "net billing" structure in 2026.
+                - **Conclusion:** Conclude that the primary strategy to mitigate this risk is to secure an interconnection agreement in 2025 to be "grandfathered" under the current, superior rules, thus locking in the favorable returns.`;
+                showModal("Risk vs. Opportunity Analysis", callGemini(prompt));
+            });
+            
+            systemCostSlider.addEventListener('input', () => updateDashboard());
+            rateEscalationSlider.addEventListener('input', () => updateDashboard());
+
+            // --- Google Maps & Solar API Integration ---
+            window.initMap = () => {
+                map = new google.maps.Map(document.getElementById("solar-map"), { center: { lat: 49.2827, lng: -123.1207 }, zoom: 12, mapTypeId: 'satellite' });
+                const autocomplete = new google.maps.places.Autocomplete(document.getElementById('address-input'), { componentRestrictions: { country: "ca" }, fields: ["geometry", "formatted_address"] });
+                autocomplete.addListener('place_changed', () => { selectedPlace = autocomplete.getPlace(); });
+                
+                const insightsAutocomplete = new google.maps.places.Autocomplete(document.getElementById('address-input-insights'), { componentRestrictions: { country: "ca" }, fields: ["geometry", "formatted_address"] });
+                insightsAutocomplete.addListener('place_changed', () => { insightsSelectedPlace = insightsAutocomplete.getPlace(); });
+            };
+            
+            function initializeApiFeatures() {
+                if (Maps_API_KEY) {
+                    const script = document.createElement('script');
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${Maps_API_KEY}&libraries=places,maps&callback=initMap`;
+                    script.async = true;
+                    document.head.appendChild(script);
+                } else {
+                    const solarPotentialSection = document.getElementById('solar-potential-main-content');
+                    solarPotentialSection.innerHTML = `<div class="mt-10 max-w-2xl mx-auto p-6 bg-red-100 text-red-800 rounded-lg text-center"><p class="font-bold">Property Analysis Feature Disabled</p><p>A Google Maps API key is required to use this feature. Please add your key to the 'Maps_API_KEY' constant in the script to assess property potential.</p></div>`;
+                }
+            }
+
+            analyzeAddressBtn.addEventListener('click', async () => {
+                if (!selectedPlace || !selectedPlace.geometry) { showError("Please select a valid address from the dropdown list."); return; }
+                
+                showLoader(true);
+                solarResultsContainer.classList.add('hidden');
+                aiReportOutput.classList.add('hidden');
+                propertyRoiOutput.classList.add('hidden');
+                showError(false);
+                if (heatmapOverlay) heatmapOverlay.setMap(null);
+
+                const location = selectedPlace.geometry.location;
+                map.setCenter(location);
+                map.setZoom(20);
+
+                try {
+                    const [buildingInsights, dataLayers] = await Promise.all([fetchBuildingInsights(location), fetchDataLayers(location)]);
+                    if (buildingInsights) {
+                        displaySolarResults(buildingInsights, selectedPlace.formatted_address);
+                        solarResultsContainer.classList.remove('hidden');
+                    } else {
+                         showError("Could not retrieve detailed solar insights for this address. The location may be out of coverage or the building too small.");
+                    }
+                    if (dataLayers && dataLayers.imageryWholeRoofIntensity) {
+                        const { url, boundingBox } = dataLayers.imageryWholeRoofIntensity;
+                        const bounds = new google.maps.LatLngBounds(
+                            new google.maps.LatLng(boundingBox.southwest.latitude, boundingBox.southwest.longitude),
+                            new google.maps.LatLng(boundingBox.northeast.latitude, boundingBox.northeast.longitude)
+                        );
+                        heatmapOverlay = new google.maps.GroundOverlay(url, bounds);
+                        heatmapOverlay.setMap(map);
+                    }
+                } catch (error) {
+                    console.error("Error fetching solar data:", error);
+                    showError("An error occurred while fetching solar data. Please try another address.");
+                } finally {
+                    showLoader(false);
+                }
+            });
+
+            async function fetchBuildingInsights(location) {
+                const response = await fetch(`https://solar.googleapis.com/v1/buildingInsights:findClosest?location.latitude=${location.lat()}&location.longitude=${location.lng()}&requiredQuality=HIGH&key=${Maps_API_KEY}`);
+                if (!response.ok) return null;
+                return response.json();
+            }
+
+            async function fetchDataLayers(location) {
+                const response = await fetch(`https://solar.googleapis.com/v1/dataLayers:get?location.latitude=${location.lat()}&location.longitude=${location.lng()}&radius_meters=50&key=${Maps_API_KEY}`);
+                if (!response.ok) return null;
+                return response.json();
+            }
+
+            function displaySolarResults(data, address) {
+                if (!data.solarPotential) {
+                    solarDataOutput.innerHTML = `<h3 class="text-xl font-bold text-slate-800">No Detailed Solar Data Available</h3><p class="mt-2 text-slate-600">While we can see the building, detailed solar potential data is not available for this specific address. This can happen with new constructions or in areas with limited data coverage.</p>`;
+                    return;
+                }
+                const { maxArrayPanelsCount, panelCapacityWatts } = data.solarPotential;
+                const yearlyEnergyDc = data.solarPotential.solarPanelConfigs[0].yearlyEnergyDcKwh;
+                const systemSizeKw = (maxArrayPanelsCount * panelCapacityWatts) / 1000;
+                
+                const costPerWatt = parseFloat(systemCostSlider.value);
+                const estimatedGrossCost = systemSizeKw * 1000 * costPerWatt;
+
+                propertySolarData = { maxArrayPanelsCount, yearlyEnergyDc, systemSizeKw, address, estimatedGrossCost };
+                
+                solarDataOutput.innerHTML = `
+                    <h3 class="text-xl font-bold text-slate-800">Your Property's Solar Snapshot</h3>
+                    <p class="mt-1 text-sm text-slate-500">${address}</p>
+                    <div class="mt-6 space-y-4">
+                        <div class="flex justify-between items-center bg-white p-4 rounded-lg"><span class="font-medium text-slate-700">Max Panel Count:</span><span class="font-bold text-2xl text-green-600">${maxArrayPanelsCount.toLocaleString()}</span></div>
+                        <div class="flex justify-between items-center bg-white p-4 rounded-lg"><span class="font-medium text-slate-700">Potential Annual Generation:</span><span class="font-bold text-2xl text-green-600">${Math.round(yearlyEnergyDc).toLocaleString()} kWh</span></div>
+                        <div class="flex justify-between items-center bg-white p-4 rounded-lg"><span class="font-medium text-slate-700">Estimated System Size:</span><span class="font-bold text-2xl text-green-600">${systemSizeKw.toFixed(1)} kW</span></div>
+                        <div class="flex justify-between items-center bg-white p-4 rounded-lg border-t-2 border-blue-200"><span class="font-medium text-slate-700">Estimated Gross System Cost:</span><span class="font-bold text-2xl text-blue-600">$${Math.round(estimatedGrossCost).toLocaleString()}</span></div>
+                    </div>
+                    <button id="calculate-property-roi-btn" class="mt-6 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">Calculate Financials for This Property</button>
+                    <p class="mt-4 text-xs text-slate-400">Disclaimer: This is an automated estimate. An on-site assessment is required for an accurate proposal.</p>
+                `;
+                document.getElementById('calculate-property-roi-btn').addEventListener('click', handleCalculatePropertyRoi);
+            }
+
+            function handleCalculatePropertyRoi() {
+                if (!propertySolarData) return;
+                
+                propertyFinancials = calculateFinancials(propertySolarData.systemSizeKw, propertySolarData.yearlyEnergyDc, propertySolarData.estimatedGrossCost);
+                const { effectiveYear1NetCost, paybackYear, irr, year1TotalSavings } = propertyFinancials;
+
+                propertyRoiOutput.innerHTML = `
+                     <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">Property-Specific Financial Snapshot</h3>
+                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="kpi-card bg-white p-4 rounded-xl text-center"><h4 class="text-slate-500 font-medium text-sm">Payback Period</h4><p class="text-3xl font-extrabold text-green-600 mt-1">${paybackYear > 0 ? paybackYear.toFixed(1) : '>25'} Yrs</p></div>
+                        <div class="kpi-card bg-white p-4 rounded-xl text-center"><h4 class="text-slate-500 font-medium text-sm">25-Year IRR</h4><p class="text-3xl font-extrabold text-green-600 mt-1">${irr.toFixed(1)}%</p></div>
+                        <div class="kpi-card bg-white p-4 rounded-xl text-center"><h4 class="text-slate-500 font-medium text-sm">Year 1 Savings</h4><p class="text-3xl font-extrabold text-green-600 mt-1">$${Math.round(year1TotalSavings / 1000)}k</p></div>
+                        <div class="kpi-card bg-white p-4 rounded-xl text-center"><h4 class="text-slate-500 font-medium text-sm">Effective Y1 Cost</h4><p class="text-3xl font-extrabold text-blue-600 mt-1">$${Math.round(effectiveYear1NetCost / 1000)}k</p></div>
+                     </div>
+                     <div class="text-center mt-6">
+                        <button id="generate-ai-report-btn" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">✨ Generate AI-Powered Property Report</button>
+                     </div>
+                `;
+                propertyRoiOutput.classList.remove('hidden');
+                document.getElementById('generate-ai-report-btn').addEventListener('click', handleGenerateAiReport);
+            }
+
+            function handleGenerateAiReport() {
+                if (!propertyFinancials) return;
+                if (!GEMINI_API_KEY) {
+                    aiReportOutput.innerHTML = `<div class="bg-red-100 p-6 rounded-lg border border-red-200 text-red-800 text-center"><p class="font-bold">AI Report Disabled</p><p>A Gemini API key is required to generate the report. Please add your key to the 'GEMINI_API_KEY' constant in the script.</p></div>`;
+                    aiReportOutput.classList.remove('hidden');
+                    return;
+                }
+                
+                aiReportOutput.innerHTML = '<div class="flex justify-center p-8"><div class="loader"></div></div>';
+                aiReportOutput.classList.remove('hidden');
+
+                const { yearlyEnergyDc, systemSizeKw, address } = propertySolarData;
+                const costPerWatt = parseFloat(systemCostSlider.value);
+                const escalation = parseFloat(rateEscalationSlider.value);
+
+                const prompt = `Act as a commercial solar consultant in British Columbia, Canada. The year is 2025. Generate a concise, professional preliminary assessment for a business owner based on the following data derived from the Google Solar API and user inputs.
+
+                **Property & System Data:**
+                - Address: ${address}
+                - Estimated System Size: ${systemSizeKw.toFixed(1)} kW
+                - Potential Annual Generation: ${Math.round(yearlyEnergyDc).toLocaleString()} kWh
+
+                **User's Financial Assumptions:**
+                - System Cost Assumption: $${costPerWatt.toFixed(2)} per watt
+                - Assumed Annual Electricity Rate Escalation: ${escalation.toFixed(1)}%
+
+                **Calculated Financial Results:**
+                - Estimated Payback Period: ${propertyFinancials.paybackYear > 0 ? propertyFinancials.paybackYear.toFixed(1) : '>25'} years
+                - Estimated 25-Year IRR: ${propertyFinancials.irr.toFixed(1)}%
+                - Estimated First-Year Savings: $${Math.round(propertyFinancials.year1TotalSavings).toLocaleString()}
+                - Estimated Effective Year 1 Cost (after all 2025 incentives): $${Math.round(propertyFinancials.effectiveYear1NetCost).toLocaleString()}
+
+                **Your Task:**
+                Synthesize this information into a brief, encouraging report. Structure it with these headings:
+                1.  **Executive Summary:** A brief opening statement about the excellent solar potential for this specific property.
+                2.  **System & Performance:** Briefly describe the estimated system size and what its annual generation means in practical terms.
+                3.  **Financial Case:** Explain the financial results (Payback, IRR, Savings, Net Cost) in simple terms, highlighting why this looks like a strong investment based on the user's assumptions.
+                4.  **Next Steps:** Recommend an on-site assessment to verify the data and get a formal proposal.
+
+                Keep the tone professional, data-driven, and optimistic.`;
+                
+                callGemini(prompt).then(report => {
+                    aiReportOutput.innerHTML = `
+                        <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+                             <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">Your Personalized AI Property Report</h3>
+                             <div class="text-slate-700 text-sm space-y-4">${report.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            function showLoader(isLoading) { solarLoader.style.display = isLoading ? 'flex' : 'none'; }
+            function showError(message) { solarError.textContent = message; solarError.style.display = message ? 'block' : 'none'; }
+        
+            initCharts();
+            setupTabs();
+            updateDashboard();
+            initializeApiFeatures();
+        });
+
+    </script>
+</body>
+</html>

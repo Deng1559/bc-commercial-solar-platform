@@ -1,8 +1,8 @@
-# BC Commercial Solar Calculator
+# BC Commercial Solar Lead Generation Platform
 
 ## Overview
 
-This is a full-stack web application built for calculating commercial solar installations in British Columbia, Canada. The application provides businesses with detailed financial analysis including cost projections, incentive calculations, and ROI estimates for solar energy systems. It features a React frontend with TypeScript, an Express.js backend, and PostgreSQL database integration through Drizzle ORM.
+This is a comprehensive full-stack lead generation platform built for BC commercial solar installers and businesses. The application combines advanced solar calculation tools, interactive financial modeling, Google Solar API integration, and CRM functionality to convert prospects into qualified leads. It features a React frontend with TypeScript, an Express.js backend, and comprehensive lead management capabilities.
 
 ## System Architecture
 
@@ -32,6 +32,31 @@ The application uses a PostgreSQL database with the following main entities:
 
 ## Key Components
 
+### Interactive Financial Modeling
+Advanced real-time calculator (`client/src/components/interactive-financial-model.tsx`) featuring:
+- Dynamic system sizing with cost per watt adjustments
+- Real-time ROI and payback period calculations
+- 25-year financial projections with escalating energy rates
+- Key performance indicators (KPIs) dashboard
+- Integrated incentive calculations (Federal ITC, BC Hydro rebates, PST exemptions)
+- AI-powered risk analysis and opportunity assessment
+
+### Google Solar API Integration
+Satellite-powered property analysis (`client/src/components/solar-map-analysis.tsx`) providing:
+- Real-time roof assessment using Google Solar API
+- Interactive satellite map visualization
+- Solar potential rating and system sizing recommendations
+- Automated roof area calculations and panel optimization
+- Address-based solar irradiance data for BC regions
+
+### Lead Generation System
+Comprehensive lead capture and management (`client/src/components/lead-generation-form.tsx`):
+- Multi-step lead qualification forms
+- Business type and energy usage profiling
+- Project timeline and goal identification
+- Integrated CRM data collection
+- Automated lead scoring and routing
+
 ### Solar Calculator Engine
 Located in both frontend (`client/src/lib/solar-calculations.ts`) and backend (`server/routes.ts`), the calculator performs:
 - System sizing based on business requirements
@@ -42,27 +67,13 @@ Located in both frontend (`client/src/lib/solar-calculations.ts`) and backend (`
 - Payback period and 25-year ROI analysis
 - CO2 offset estimations
 
-### Form System
-The calculator form (`client/src/components/calculator-form.tsx`) collects:
-- Business information (name, type, contact details)
-- Property specifications (address, square footage, roof area)
-- Energy usage patterns (monthly consumption, peak demand, rate tier)
-- System preferences (size, installation type, panel quality, battery storage)
-
-### Results Display
-The results panel (`client/src/components/results-panel.tsx`) presents:
-- System specifications and annual production
-- Total costs and available incentives
-- Net cost after rebates and tax credits
-- Annual savings and payback period
-- Long-term ROI and environmental impact
-
 ### Incentives Information
 Dedicated section (`client/src/components/incentives-section.tsx`) explaining:
 - CleanBC Business Programs
 - Federal solar incentives
 - Provincial rebate structures
 - Tax credit opportunities
+- 2025 regulatory urgency and net metering grandfathering
 
 ## Data Flow
 

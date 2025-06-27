@@ -5,6 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import CalculatorForm from "@/components/calculator-form";
 import ResultsPanel from "@/components/results-panel";
 import IncentivesSection from "@/components/incentives-section";
+import InteractiveFinancialModel from "@/components/interactive-financial-model";
+import SolarMapAnalysis from "@/components/solar-map-analysis";
+import LeadGenerationForm from "@/components/lead-generation-form";
 import { Building, Calculator, Award, Factory, Zap, TrendingUp, Leaf, Home } from "lucide-react";
 
 interface CalculationResults {
@@ -43,10 +46,12 @@ export default function CommercialCalculator() {
               <Zap className="h-8 w-8 text-blue-600 mr-3" />
               <h1 className="text-xl font-semibold text-gray-900">BC Commercial Solar Calculator</h1>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               <a href="#calculator" className="text-gray-700 hover:text-blue-600 font-medium">Calculator</a>
+              <a href="#financial-model" className="text-gray-700 hover:text-blue-600 font-medium">Financials</a>
+              <a href="#solar-analysis" className="text-gray-700 hover:text-blue-600 font-medium">Property Analysis</a>
               <a href="#incentives" className="text-gray-700 hover:text-blue-600 font-medium">Incentives</a>
-              <a href="#contact" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Get Quote</a>
+              <a href="#lead-form" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Get Quote</a>
             </div>
           </div>
         </div>
@@ -57,11 +62,14 @@ export default function CommercialCalculator() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
+              <div className="inline-block bg-yellow-100 text-yellow-800 text-sm font-semibold tracking-wider uppercase rounded-full px-4 py-1 mb-4">
+                2025 Limited-Time Incentives
+              </div>
               <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-                Commercial Solar Solutions for BC Businesses
+                BC's Complete Commercial Solar Lead Generation Platform
               </h1>
               <p className="text-xl text-blue-100 mb-8">
-                Calculate your commercial solar potential with AI-powered analysis. Get accurate estimates for systems from 20kW to 1MW+ with CleanBC Business rebate calculations.
+                Interactive financial modeling, satellite analysis, and comprehensive lead generation for BC commercial solar installers. Leverage Google Solar API integration and real-time incentive calculations to convert prospects into qualified leads.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
@@ -167,6 +175,16 @@ export default function CommercialCalculator() {
         </div>
       </section>
 
+      {/* Interactive Financial Modeling */}
+      <div id="financial-model">
+        <InteractiveFinancialModel />
+      </div>
+
+      {/* Solar Map Analysis */}
+      <div id="solar-analysis">
+        <SolarMapAnalysis />
+      </div>
+
       {/* BC Commercial Incentives */}
       <IncentivesSection />
 
@@ -252,95 +270,50 @@ export default function CommercialCalculator() {
         </div>
       </section>
 
-      {/* Contact/CTA Section */}
-      <section id="contact" className="py-16 commercial-gradient text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Ready to Go Solar?</h2>
-            <p className="text-xl text-blue-100">Get a detailed proposal customized for your business needs</p>
+      {/* 2025 Urgency Section */}
+      <section className="py-16 bg-blue-800 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-block bg-yellow-100 text-yellow-800 text-sm font-semibold tracking-wider uppercase rounded-full px-4 py-1 mb-6">
+            Urgent 2025 Opportunity
           </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-2xl font-semibold mb-6">What You'll Get:</h3>
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="w-6 h-6 rounded-full bg-green-400 flex items-center justify-center mt-1 mr-4 flex-shrink-0">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Comprehensive Site Analysis</h4>
-                    <p className="text-blue-100">Detailed satellite imagery analysis and on-site assessment</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-6 h-6 rounded-full bg-green-400 flex items-center justify-center mt-1 mr-4 flex-shrink-0">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Custom Financial Modeling</h4>
-                    <p className="text-blue-100">25-year cash flow projections with all incentives included</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-6 h-6 rounded-full bg-green-400 flex items-center justify-center mt-1 mr-4 flex-shrink-0">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Professional Installation</h4>
-                    <p className="text-blue-100">Certified installers with full warranty and support</p>
-                  </div>
-                </div>
-              </div>
+          <h2 className="text-3xl font-bold mb-6">The Urgency of 2025: Why You Need to Act Now</h2>
+          <p className="text-lg text-blue-200 mb-6">
+            BC Hydro's Self-Generation Program is under a major regulatory review by the BCUC. The current, 
+            highly favorable "net metering" rules are expected to be replaced by a new "net billing" structure, 
+            likely in 2026. Businesses that secure their interconnection approval in 2025 will likely be 
+            "grandfathered" under the current, more lucrative rules.
+          </p>
+          <p className="text-lg text-blue-200 font-bold mb-8">
+            This isn't just an opportunity—it's a strategic deadline to lock in a superior long-term return 
+            and mitigate future regulatory risk.
+          </p>
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-blue-700 p-6 rounded-lg">
+              <h4 className="font-semibold text-xl mb-2">Current Net Metering</h4>
+              <p className="text-blue-200">Full retail credit for excess energy production</p>
             </div>
-
-            <Card className="bg-white text-gray-900 p-8 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold">Get Your Custom Quote</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <input 
-                      type="text" 
-                      placeholder="First Name" 
-                      className="form-input"
-                    />
-                    <input 
-                      type="text" 
-                      placeholder="Last Name" 
-                      className="form-input"
-                    />
-                  </div>
-                  <input 
-                    type="email" 
-                    placeholder="Business Email" 
-                    className="form-input"
-                  />
-                  <input 
-                    type="tel" 
-                    placeholder="Phone Number" 
-                    className="form-input"
-                  />
-                  <input 
-                    type="text" 
-                    placeholder="Company Name" 
-                    className="form-input"
-                  />
-                  <textarea 
-                    placeholder="Tell us about your energy needs..." 
-                    rows={3} 
-                    className="form-input resize-none"
-                  />
-                  <Button className="w-full bg-blue-600 text-white py-3 hover:bg-blue-700">
-                    Get My Custom Solar Proposal
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <div className="bg-yellow-600 p-6 rounded-lg">
+              <h4 className="font-semibold text-xl mb-2">2026+ Net Billing</h4>
+              <p className="text-yellow-100">Reduced compensation for surplus energy</p>
+            </div>
+            <div className="bg-green-600 p-6 rounded-lg">
+              <h4 className="font-semibold text-xl mb-2">2025 Action</h4>
+              <p className="text-green-100">Lock in favorable terms for 25+ years</p>
+            </div>
           </div>
+          <Button 
+            onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-white text-blue-800 font-bold py-3 px-8 rounded-lg text-lg hover:bg-blue-100 transition-colors"
+          >
+            Secure Your 2025 Solar Project
+          </Button>
         </div>
       </section>
+
+      {/* Lead Generation Form */}
+      <div id="lead-form">
+        <LeadGenerationForm />
+      </div>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
