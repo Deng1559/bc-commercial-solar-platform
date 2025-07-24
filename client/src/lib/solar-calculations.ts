@@ -40,7 +40,20 @@ const BC_COMMERCIAL_RATES: Record<string, number> = {
   "Transmission Service": 0.0759,
 };
 
+import { calculationCache } from './calculation-cache';
+
 export function calculateCommercialSolar(inputs: SolarCalculationInputs): SolarCalculationResults {
+  // Check cache first
+  const cachedResult = calculationCache.get(inputs);
+  if (cachedResult) {
+    return cachedResult;
+  }
+
+  // Input validation
+  if (!inputs || typeof inputs !== 'object') {
+    throw new Error('Invalid input data provided');
+  }
+
   const {
     systemSize,
     monthlyUsage,
@@ -52,8 +65,18 @@ export function calculateCommercialSolar(inputs: SolarCalculationInputs): SolarC
     location,
   } = inputs;
 
-  // Get solar irradiance for location
-  const irradiance = BC_SOLAR_IRRADIANCE[location.toLowerCase()] || BC_SOLAR_IRRADIANCE.default;
+  // Validate required inputs
+  if (systemSize <= 0 || monthlyUsage <= 0 || currentBill <= 0) {
+    throw new Error('System size, monthly usage, and current bill must be positive numbers');
+  }
+
+  if (!rateTier || !installationType || !panelQuality || !batteryStorage) {
+    throw new Error('All configuration options must be selected');
+  }
+
+  // Get solar irradiance for location with fallback
+  const locationKey = location?.toLowerCase() || 'default';
+  const irradiance = BC_SOLAR_IRRADIANCE[locationKey] || BC_SOLAR_IRRADIANCE.default;
   
   // System efficiency factors
   let systemEfficiency = 0.85; // Base efficiency
@@ -151,7 +174,7 @@ export function calculateCommercialSolar(inputs: SolarCalculationInputs): SolarC
   // CO2 offset calculation (BC grid emission factor: 0.42 kg CO2/kWh)
   const co2OffsetAnnual = (annualProduction * 0.42) / 1000; // tonnes
 
-  return {
+  const result = {
     systemSize,
     annualProduction: Math.round(annualProduction),
     totalCost: Math.round(totalCost),
@@ -163,6 +186,11 @@ export function calculateCommercialSolar(inputs: SolarCalculationInputs): SolarC
     roi25Year: Math.round(roi25Year * 10) / 10,
     co2OffsetAnnual: Math.round(co2OffsetAnnual * 10) / 10,
   };
+
+  // Cache the result
+  calculationCache.set(inputs, result);
+  
+  return result;
 }
 
 export function estimateRoofArea(buildingSquareFootage: number, buildingType: string): number {

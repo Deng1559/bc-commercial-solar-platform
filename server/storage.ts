@@ -28,6 +28,7 @@ export class MemStorage implements IStorage {
   private solarProjects: Map<number, SolarProject>;
   private solarCalculations: Map<number, SolarCalculation>;
   private bcRateStructures: Map<number, BcRateStructure>;
+  private leads: Map<number, Lead>;
   private currentId: number;
 
   constructor() {
@@ -35,6 +36,7 @@ export class MemStorage implements IStorage {
     this.solarProjects = new Map();
     this.solarCalculations = new Map();
     this.bcRateStructures = new Map();
+    this.leads = new Map();
     this.currentId = 1;
     
     // Initialize BC rate structures
@@ -175,19 +177,25 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+    this.leads.set(id, lead);
     return lead;
   }
 
   async getLeads(): Promise<Lead[]> {
-    return [];
+    return Array.from(this.leads.values());
   }
 
   async getLeadById(id: number): Promise<Lead | undefined> {
-    return undefined;
+    return this.leads.get(id);
   }
 
   async updateLeadStatus(id: number, status: string): Promise<void> {
-    // Memory storage - no persistent state
+    const lead = this.leads.get(id);
+    if (lead) {
+      lead.status = status;
+      lead.updatedAt = new Date();
+      this.leads.set(id, lead);
+    }
   }
 }
 

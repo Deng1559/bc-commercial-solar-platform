@@ -1,10 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 
 if (!process.env.GEMINI_API_KEY) {
-  throw new Error("GEMINI_API_KEY must be set");
+  console.warn("GEMINI_API_KEY not set - AI features will use fallback responses");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
 
 export interface BusinessAnalysis {
   energyProfile: string;

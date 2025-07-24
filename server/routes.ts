@@ -49,8 +49,17 @@ function generateBCEstimates(address: string) {
 }
 
 async function calculateSolarSystem(project: any) {
-  // Solar calculation logic
+  // Input validation
+  if (!project || typeof project !== 'object') {
+    throw new Error('Invalid project data provided');
+  }
+
+  // Solar calculation logic with validation
   const systemSize = project.desiredSystemSize || 500; // kW
+  if (systemSize <= 0 || systemSize > 10000) {
+    throw new Error('System size must be between 1 and 10,000 kW');
+  }
+
   const annualSunHours = 1200; // BC average
   const systemEfficiency = 0.85;
   
