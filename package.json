@@ -1,8 +1,15 @@
 {
-  "name": "rest-express",
+  "name": "bc-commercial-solar-platform",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
+  "author": "Dennis Eng <contact@klicksmartai.com> (https://www.klicksmartai.com)",
+  "description": "British Columbia Commercial Solar Analysis Platform - Calculate solar potential, costs, and ROI for commercial properties in BC",
+  "homepage": "https://github.com/Deng1559/bc-commercial-solar-platform",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deng1559/bc-commercial-solar-platform.git"
+  },
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",

@@ -40,6 +40,16 @@ const BC_COMMERCIAL_RATES: Record<string, number> = {
   "Transmission Service": 0.0759,
 };
 
+/**
+ * BC Commercial Solar Platform - Solar Calculation Engine
+ * 
+ * Copyright (c) 2025 Dennis Eng
+ * Website: www.klicksmartai.com
+ * 
+ * Advanced solar calculation algorithms for British Columbia commercial properties.
+ * Includes BC-specific irradiance data, incentive calculations, and ROI analysis.
+ */
+
 import { calculationCache } from './calculation-cache';
 
 export function calculateCommercialSolar(inputs: SolarCalculationInputs): SolarCalculationResults {

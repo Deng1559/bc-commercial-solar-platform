@@ -1,3 +1,12 @@
+/**
+ * BC Commercial Solar Platform - AI Integration Module
+ * 
+ * Copyright (c) 2025 Dennis Eng
+ * Website: www.klicksmartai.com
+ * 
+ * Google Gemini AI integration for business analysis and lead qualification
+ */
+
 import { GoogleGenAI } from "@google/genai";
 
 if (!process.env.GEMINI_API_KEY) {

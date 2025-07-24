@@ -2,6 +2,8 @@
 
 A comprehensive full-stack lead generation platform built specifically for British Columbia commercial solar installers and businesses. This platform combines advanced solar calculation tools, interactive financial modeling, AI-powered lead qualification, and CRM functionality to convert prospects into qualified leads.
 
+**Copyright (c) 2025 Dennis Eng | [www.klicksmartai.com](https://www.klicksmartai.com)**
+
 ![Solar Calculator Platform](./attached_assets/image_1751068546830.png)
 
 ## 🌟 Key Features

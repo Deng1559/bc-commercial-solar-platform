@@ -1,3 +1,12 @@
+/**
+ * BC Commercial Solar Platform - Calculation Cache System
+ * 
+ * Copyright (c) 2025 Dennis Eng
+ * Website: www.klicksmartai.com
+ * 
+ * Intelligent caching system for solar calculations to improve performance
+ */
+
 import { SolarCalculationInputs, SolarCalculationResults } from './solar-calculations';
 
 interface CacheEntry {

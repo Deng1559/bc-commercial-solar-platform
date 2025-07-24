@@ -1,3 +1,13 @@
+/**
+ * BC Commercial Solar Platform - Main Application Component
+ * 
+ * Copyright (c) 2025 Dennis Eng
+ * Website: www.klicksmartai.com
+ * 
+ * This file is part of the BC Commercial Solar Platform, a comprehensive
+ * lead generation and solar analysis platform for British Columbia.
+ */
+
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";

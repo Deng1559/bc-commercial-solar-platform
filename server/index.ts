@@ -1,3 +1,12 @@
+/**
+ * BC Commercial Solar Platform - Server Entry Point
+ * 
+ * Copyright (c) 2025 Dennis Eng
+ * Website: www.klicksmartai.com
+ * 
+ * Express.js server for the BC Commercial Solar Platform API
+ */
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
