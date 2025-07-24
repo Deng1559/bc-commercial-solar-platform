@@ -1,6 +1,80 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+server/public/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS generated files
 .DS_Store
-server/public
-vite.config.ts.*
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*~
+
+# Logs
+logs/
+*.log
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
 *.tar.gz
+*.tgz
+*.zip
+*.rar
+
+# Vite build cache
+vite.config.ts.*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Replit specific
+.replit
+.breakpoints
+.upm
+
+# Drizzle migrations (if using migration files)
+drizzle/
