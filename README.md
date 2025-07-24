@@ -61,7 +61,7 @@ A comprehensive full-stack lead generation platform built specifically for Briti
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/bc-commercial-solar-platform.git
+   git clone https://github.com/Deng1559/bc-commercial-solar-platform.git
    cd bc-commercial-solar-platform
    ```
 
